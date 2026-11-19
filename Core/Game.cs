@@ -156,6 +156,7 @@ public class Game : IGameServices
     public void DrawWorldAndHud(Graphics g)
     {
         _renderer.Render(g, CurrentLocation);
+        DayLight.Draw(g, Time.TimeOfDay);   // warna langit sesuai jam
 
         if (Debug.IsVisible)
             Debug.Draw(g, this);

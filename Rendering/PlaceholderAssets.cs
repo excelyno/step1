@@ -21,8 +21,9 @@ public class PlaceholderAssets : IAssetProvider
     private readonly Font _letterFont = new("Segoe UI", 7f, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly StringFormat _center = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
 
-    public void DrawTile(Graphics g, TileType type, RectangleF dest)
+    public void DrawTile(Graphics g, TileMap map, int x, int y, RectangleF dest)
     {
+        TileType type = map.GetTile(x, y)!.Type;
         Color color = _tileColors.ContainsKey(type) ? _tileColors[type] : Color.Magenta;
 
         using SolidBrush brush = new(color);
@@ -39,7 +40,7 @@ public class PlaceholderAssets : IAssetProvider
         if (category == "player")
         {
             Fill(g, Color.FromArgb(60, 90, 200), dest);
-            DrawFacingMarker(g, parts[^1], dest);
+            DrawFacingMarker(g, parts[1], dest);   // "player_down_2" -> "down"
         }
         else if (category == "hoedirt")
         {
@@ -54,6 +55,22 @@ public class PlaceholderAssets : IAssetProvider
         {
             Fill(g, Color.FromArgb(150, 110, 60), new RectangleF(dest.X, dest.Y + dest.Height * 0.25f, dest.Width, dest.Height * 0.75f));
             DrawLetter(g, "$", dest);
+        }
+        else if (category == "tree" || category == "bush")
+        {
+            Fill(g, Color.FromArgb(50, 110, 45), dest);
+        }
+        else if (category == "rock")
+        {
+            Fill(g, Color.Gray, dest);
+        }
+        else if (category == "tuft" || category == "flowers" || category == "lily" || category == "butterfly")
+        {
+            // hiasan kecil: tidak digambar di mode placeholder
+        }
+        else if (category == "house")
+        {
+            // kotak placeholder: rumah sudah terlihat dari tile Building, tidak perlu digambar
         }
         else if (category == "door")
         {

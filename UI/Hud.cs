@@ -100,7 +100,7 @@ public class Hud
     private void DrawStack(Graphics g, ItemStack stack, Rectangle slot)
     {
         // Ikon (polimorfisme: tiap item punya SpriteKey sendiri)
-        var icon = new RectangleF(slot.X + 10, slot.Y + 10, slot.Width - 20, slot.Height - 20);
+        var icon = new RectangleF(slot.X + 8, slot.Y + 8, 32, 32);   // 16px x2 = tajam
         _assets.DrawSprite(g, stack.Item.SpriteKey, icon);
 
         // Jumlah (kalau lebih dari 1)

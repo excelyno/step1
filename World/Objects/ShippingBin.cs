@@ -14,6 +14,9 @@ public class ShippingBin : WorldObject, IInteractable
     public override Size SizeInTiles => new(2, 1);
     public override string SpriteKey => "bin";
 
+    /// <summary>Gambar 8 piksel lebih tinggi dari hitbox (tutup kotak menonjol ke atas).</summary>
+    public override RectangleF SpriteBounds => new(Position.X, Position.Y - 8, 32, 24);
+
     public IReadOnlyList<ItemStack> Contents => _contents;
 
     public bool CanInteract(Player player) => true;

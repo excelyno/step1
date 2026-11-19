@@ -12,11 +12,15 @@ public class TileMap
     public int Height { get; }
     public Point SpawnTile { get; }   // posisi huruf 'S' di file map
 
+    /// <summary>Hiasan dari file map (pohon, batu, bunga, ...). Dibuat jadi objek oleh GameLocation.</summary>
+    public IReadOnlyList<MapMarker> Markers { get; }
+
     public int PixelWidth => Width * GameConfig.TileSize;
     public int PixelHeight => Height * GameConfig.TileSize;
 
-    public TileMap(TileType[,] layout, Point spawnTile)
+    public TileMap(TileType[,] layout, Point spawnTile, List<MapMarker> markers)
     {
+        Markers = markers;
         Width = layout.GetLength(0);
         Height = layout.GetLength(1);
         SpawnTile = spawnTile;
@@ -72,6 +76,6 @@ public class TileMap
 
         for (int y = y0; y <= y1; y++)
             for (int x = x0; x <= x1; x++)
-                assets.DrawTile(g, _tiles[x, y].Type, new RectangleF(x * size, y * size, size, size));
+                assets.DrawTile(g, this, x, y, new RectangleF(x * size, y * size, size, size));
     }
 }

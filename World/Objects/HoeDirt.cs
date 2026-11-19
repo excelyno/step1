@@ -20,7 +20,24 @@ public class HoeDirt : WorldObject, IInteractable, IDayUpdatable
     /// <summary>Tanah selalu digambar paling bawah (di bawah pemain), apa pun posisinya.</summary>
     public override int DrawOrder => int.MinValue + Tile.Y;
 
-    public override string SpriteKey => IsWatered ? "hoedirt_wet" : "hoedirt_dry";
+    /// <summary>
+    /// Contoh "hoedirt_dry_5". Angka = tetangga HoeDirt mana saja yang ada (atas=1, kanan=2, bawah=4, kiri=8),
+    /// supaya petak yang bersebelahan tergambar menyambung jadi satu bedeng, bukan kotak-kotak terpisah.
+    /// </summary>
+    public override string SpriteKey => $"hoedirt_{(IsWatered ? "wet" : "dry")}_{NeighborMask()}";
+
+    private int NeighborMask()
+    {
+        int mask = 0;
+        if (HasHoeDirtAt(0, -1)) mask += 1;
+        if (HasHoeDirtAt(1, 0)) mask += 2;
+        if (HasHoeDirtAt(0, 1)) mask += 4;
+        if (HasHoeDirtAt(-1, 0)) mask += 8;
+        return mask;
+    }
+
+    private bool HasHoeDirtAt(int dx, int dy) =>
+        Location?.GetObjectAt(new Point(Tile.X + dx, Tile.Y + dy)) is HoeDirt;
 
     public void Plant(Crop crop)
     {

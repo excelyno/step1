@@ -26,6 +26,24 @@ public abstract class GameLocation : IUpdatable
         Name = name;
         string path = Path.Combine(AppContext.BaseDirectory, GameConfig.MapFolder, mapFileName);
         Map = MapLoader.LoadFromFile(path);
+
+        // Hiasan dari file map -> objek dunia
+        foreach (MapMarker marker in Map.Markers)
+            Add(CreateScenery(marker.Symbol, marker.Tile));
+    }
+
+    /// <summary>Huruf hiasan di file map -> objek. Lokasi lain boleh menimpa untuk hiasan khasnya.</summary>
+    protected virtual Scenery CreateScenery(char symbol, Point tile)
+    {
+        switch (symbol)
+        {
+            case 'T': return new Tree(tile);
+            case 'b': return new Bush(tile);
+            case 'R': return new Rock(tile);
+            case 'g': return new GrassTuft(tile);
+            case '*': return new Flowers(tile);
+            default: return new LilyPad(tile);   // 'L'
+        }
     }
 
     public void Add(GameObject obj)

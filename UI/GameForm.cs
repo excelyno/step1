@@ -26,7 +26,7 @@ public class GameForm : Form
         DoubleBuffered = true;
 
         // Baris ini satu-satunya yang diganti saat art (sprite PNG) sudah siap
-        _game = new Game(new PlaceholderAssets());
+        _game = new Game(new SpriteAssets());
 
         // Game loop: Timer memicu GameLoop() terus-menerus
         _timer.Interval = GameConfig.TimerInterval;

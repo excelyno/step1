@@ -13,5 +13,9 @@
     <None Update="Content\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- Sprite PNG hasil Tools/generate_assets.py -->
+    <None Update="Assets\**\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

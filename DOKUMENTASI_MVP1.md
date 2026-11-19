@@ -225,3 +225,37 @@ Pola tambahan: **Template Method** (`Tool.Use`), **Factory** (`ItemRegistry.Crea
 - Pingsan dicek langsung di `PlayingState` (`Time.HasPassedOut`), bukan lewat event.
 - `IDayUpdatable.OnNewDay(GameDate)` langsung terima tanggal (tidak ada `DayContext`; hujan nanti di MVP 2).
 - Tidak ada `IDisposable`, `sealed`, event `Changed`.
+
+## Grafis (Assets)
+
+Semua sprite dibuat oleh `Tools/generate_assets.py` (Python + Pillow), pixel art 16px per tile.
+
+```
+python Tools/generate_assets.py     -> isi ulang folder Assets/
+```
+
+| Folder | Isi | Nama file = sprite key |
+|---|---|---|
+| `Assets/Tiles` | rumput (10 variasi), tanah, jalan, air (4 frame), pinggiran, pagar | `grass_3`, `water_2`, `edge_grass_n`, `fence_post` |
+| `Assets/Characters` | petani 16×32, 4 arah × 5 frame (0 diam; 1 kaki maju, 2 melintas, 3 kaki lain maju, 4 melintas) | `player_down_2` |
+| `Assets/Objects` | rumah, pintu, kotak kirim, tanah dicangkul (16 bentuk sambungan) | `house`, `bin`, `hoedirt_wet_5` |
+| `Assets/Nature` | pohon & rumput & bunga (3 frame goyang), semak, batu, teratai, kupu-kupu | `tree_1`, `flowers_2_0`, `butterfly_0_1` |
+| `Assets/Crops` | 4 tanaman × 5 tahap + mati | `crop_kale_3`, `crop_dead` |
+| `Assets/Items` | ikon alat, bibit, hasil panen | `tool_hoe`, `seed_parsnip_seeds`, `produce_kale` |
+
+Kelas `Rendering/SpriteAssets` (implementasi `IAssetProvider`) membaca PNG tersebut.
+Ganti grafis = ganti 1 baris di `GameForm`: `new SpriteAssets()` ↔ `new PlaceholderAssets()` (**polimorfisme**).
+Kalau PNG tidak ada, `SpriteAssets` otomatis pakai kotak warna placeholder.
+
+`SpriteAssets.DrawTile` melihat tile tetangga (autotile): rumput tumpah ke tepi tanah, tebing di tepi kolam, pagar menyambung.
+
+### Map hidup (MVP 1 + grafis)
+
+- `farm.txt` punya huruf hiasan: `T` pohon, `b` semak, `R` batu, `g` rumput liar, `*` bunga, `L` teratai.
+  `MapLoader` mencatatnya sebagai `MapMarker`, lalu `GameLocation.CreateScenery()` mengubahnya jadi objek.
+- `Scenery` (abstract) → `Tree`, `Bush`, `Rock`, `GrassTuft`, `Flowers`, `LilyPad`.
+  Turunan cukup mengisi `BaseKey`, `Sways`, `Variants` (**inheritance + polymorphism**).
+  Goyangan dihitung dari jam + posisi X, jadi angin terlihat berjalan seperti gelombang.
+- `Butterfly : GameObject` terbang acak (override `Update`).
+- `HoeDirt.SpriteKey` melihat 4 tetangga (atas=1, kanan=2, bawah=4, kiri=8) → petak bersebelahan menyambung jadi satu bedeng.
+- `DayLight` memberi warna langit sesuai jam: fajar keemasan, siang bening, senja oranye, malam biru.

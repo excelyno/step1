@@ -2,7 +2,9 @@ namespace FarmGame.World;
 
 /// <summary>
 /// Membaca file map teks (1 huruf = 1 tile) menjadi TileMap.
-/// Legenda: G=rumput D=tanah P=jalan W=air F=pagar B=bangunan .=void S=spawn pemain
+/// Legenda tile : G=rumput D=tanah P=jalan W=air F=pagar B=bangunan .=void S=spawn pemain
+/// Legenda hiasan: T=pohon b=semak R=batu g=rumput liar *=bunga L=teratai
+///   (hiasan dicatat sebagai MapMarker; tile di bawahnya rumput, atau air untuk teratai)
 /// Baris yang diawali '#' adalah komentar.
 /// </summary>
 public static class MapLoader
@@ -30,6 +32,7 @@ public static class MapLoader
         int height = rows.Count;
         TileType[,] layout = new TileType[width, height];
         Point? spawn = null;
+        List<MapMarker> markers = new();
 
         for (int y = 0; y < height; y++)
         {
@@ -48,6 +51,11 @@ public static class MapLoader
                     spawn = new Point(x, y);
                     layout[x, y] = TileType.Dirt;   // di bawah titik spawn dianggap tanah
                 }
+                else if (MapMarker.IsMarker(c))
+                {
+                    markers.Add(new MapMarker(c, new Point(x, y)));
+                    layout[x, y] = c == 'L' ? TileType.Water : TileType.Grass;
+                }
                 else
                 {
                     layout[x, y] = CharToTile(c, fileName, x, y);
@@ -58,7 +66,7 @@ public static class MapLoader
         if (spawn == null)
             throw new MapFormatException(fileName + ": titik spawn 'S' tidak ditemukan.");
 
-        return new TileMap(layout, spawn.Value);
+        return new TileMap(layout, spawn.Value, markers);
     }
 
     private static TileType CharToTile(char c, string fileName, int x, int y)
