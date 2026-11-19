@@ -1,5 +1,3 @@
-using FarmGame.UI;
-
 namespace FarmGame;
 
 internal static class Program
@@ -14,8 +12,13 @@ internal static class Program
         }
         catch (MapFormatException ex)
         {
-            // Map rusak / tidak ada: tampilkan pesan yang jelas, jangan crash diam-diam.
+            // farm.txt rusak / tidak ada
             MessageBox.Show(ex.Message, "Gagal memuat map", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        catch (GameDataException ex)
+        {
+            // crops.json rusak / tidak ada
+            MessageBox.Show(ex.Message, "Gagal memuat data", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

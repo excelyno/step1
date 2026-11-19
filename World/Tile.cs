@@ -16,6 +16,9 @@ public class Tile
 
     public bool IsWalkable => Type == TileType.Grass || Type == TileType.Dirt || Type == TileType.Path;
 
+    /// <summary>MVP 1: hanya tanah (Dirt) yang bisa dicangkul.</summary>
+    public bool IsTillable => Type == TileType.Dirt;
+
     /// <summary>Mengubah jenis tile (MVP 1: tanah dicangkul).</summary>
     public void ChangeType(TileType newType) => Type = newType;
 }

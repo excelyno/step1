@@ -1,6 +1,9 @@
 namespace FarmGame.Rendering;
 
-/// <summary>Info untuk developer (tekan F3): FPS, posisi, tile, garis grid, dan kotak hitbox merah.</summary>
+/// <summary>
+/// Info untuk developer (tekan F3): FPS, posisi, tile, jam, energi, garis grid, hitbox merah,
+/// dan kotak KUNING = tile sasaran alat.
+/// </summary>
 public class DebugOverlay
 {
     private readonly Font _font = new("Consolas", 10f);
@@ -15,7 +18,7 @@ public class DebugOverlay
         DrawInfoPanel(g, game);
     }
 
-    /// <summary>Grid + hitbox, digambar dalam koordinat dunia (ikut skala dan kamera).</summary>
+    /// <summary>Grid + hitbox + tile target, digambar dalam koordinat dunia (ikut skala dan kamera).</summary>
     private void DrawGridAndHitbox(Graphics g, Game game)
     {
         GameLocation location = game.CurrentLocation;
@@ -28,6 +31,7 @@ public class DebugOverlay
 
         using Pen gridPen = new(Color.FromArgb(60, 255, 255, 255), 1f / GameConfig.Scale);
         using Pen hitboxPen = new(Color.Red, 1f / GameConfig.Scale);
+        using Pen targetPen = new(Color.Yellow, 1f / GameConfig.Scale);
 
         int x0 = Math.Max(0, TileMap.WorldToTile(view.Left));
         int y0 = Math.Max(0, TileMap.WorldToTile(view.Top));
@@ -45,6 +49,10 @@ public class DebugOverlay
             g.DrawRectangle(hitboxPen, b.X, b.Y, b.Width, b.Height);
         }
 
+        // Tile yang akan kena alat
+        Point target = game.Player.FacingTile;
+        g.DrawRectangle(targetPen, target.X * size, target.Y * size, size, size);
+
         g.Restore(state);
     }
 
@@ -52,20 +60,24 @@ public class DebugOverlay
     private void DrawInfoPanel(Graphics g, Game game)
     {
         Player player = game.Player;
+        Point tile = player.TilePosition;
+        Point target = player.FacingTile;
         string[] lines =
         {
             $"FPS      : {game.Fps}",
             $"Lokasi   : {game.CurrentLocation.Name}",
             $"Posisi   : {player.Position.X:0.0}, {player.Position.Y:0.0}",
-            $"Tile     : {player.TilePosition.X}, {player.TilePosition.Y}",
+            $"Tile     : {tile.X}, {tile.Y}  -> target {target.X}, {target.Y}",
             $"Arah     : {player.Facing}",
-            $"Bergerak : {player.IsMoving}",
+            $"Waktu    : {game.Time.Date}  {game.Time.ClockText}",
+            $"Energi   : {player.Stamina.Current}/{player.Stamina.Max}",
             $"Objek    : {game.CurrentLocation.Objects.Count}",
+            "F4 = +5 bibit   F6 = +1 jam",
         };
 
         const int pad = 8, lineHeight = 16;
         using SolidBrush panel = new(Color.FromArgb(160, 0, 0, 0));
-        g.FillRectangle(panel, pad, pad, 230, lines.Length * lineHeight + pad * 2);
+        g.FillRectangle(panel, pad, pad, 330, lines.Length * lineHeight + pad * 2);
 
         for (int i = 0; i < lines.Length; i++)
             g.DrawString(lines[i], _font, Brushes.White, pad * 2, pad * 2 + i * lineHeight);

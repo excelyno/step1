@@ -1,0 +1,7 @@
+[
+  // Data tanaman MVP 1. Menambah tanaman = menambah satu baris di sini, tanpa ubah kode.
+  { "id": "parsnip",     "name": "Parsnip",     "seedName": "Bibit Parsnip",     "seedPrice": 20, "sellPrice": 35,  "daysToMature": 4,  "energyRestore": 25, "seasons": ["Spring"] },
+  { "id": "potato",      "name": "Kentang",     "seedName": "Bibit Kentang",     "seedPrice": 50, "sellPrice": 80,  "daysToMature": 6,  "energyRestore": 25, "seasons": ["Spring"] },
+  { "id": "kale",        "name": "Kale",        "seedName": "Bibit Kale",        "seedPrice": 70, "sellPrice": 110, "daysToMature": 6,  "energyRestore": 50, "seasons": ["Spring"] },
+  { "id": "cauliflower", "name": "Kembang Kol", "seedName": "Bibit Kembang Kol", "seedPrice": 80, "sellPrice": 175, "daysToMature": 12, "energyRestore": 75, "seasons": ["Spring"] }
+]

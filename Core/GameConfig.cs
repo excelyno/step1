@@ -19,11 +19,22 @@ public static class GameConfig
     public const int TimerInterval = 10;        // ms. Windows membulatkannya ke ±15,6 ms (±60 FPS)
     public const float MaxDeltaSeconds = 0.1f;  // batas dt supaya pemain tidak "teleport" saat jendela di-drag
 
-    // Gameplay
+    // Gerak
     public const float PlayerWalkSpeed = 64f;   // piksel logis per detik (4 tile/detik)
     public const float PlayerRunSpeed = 96f;    // 6 tile/detik
     public const float CameraFollowSpeed = 8f;  // makin besar, makin cepat kamera mengejar
 
-    // Lokasi file map
+    // MVP 1: bertani
+    public const int InventorySize = 12;            // jumlah slot tas = toolbar
+    public const int StartingGold = 500;
+    public const int MaxStamina = 270;
+    public const float ToolCooldownSeconds = 0.35f; // jeda setelah pakai alat (tidak bisa jalan)
+    public const int WateringCanCapacity = 40;
+    public const float SecondsPerTenMinutes = 7f;   // 10 menit di game = 7 detik nyata
+    public const float PassedOutEnergyRatio = 0.5f; // pingsan: bangun dengan 50% energi
+    public const float LateSleepEnergyRatio = 0.75f;// tidur lewat jam 24:00: 75% energi
+
+    // Lokasi file
     public static readonly string MapFolder = Path.Combine("Content", "Maps");
+    public static readonly string DataFolder = Path.Combine("Content", "Data");
 }

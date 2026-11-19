@@ -28,7 +28,8 @@ public abstract class GameObject : IUpdatable, IDrawable
     public virtual RectangleF SpriteBounds => Bounds;
 
     /// <summary>Y bagian bawah hitbox. Benda yang lebih "ke bawah" digambar belakangan (tampil di depan).</summary>
-    public int DrawOrder => (int)Bounds.Bottom;
+    /// MVP 1: virtual, supaya HoeDirt bisa selalu digambar paling bawah.
+    public virtual int DrawOrder => (int)Bounds.Bottom;
 
     /// <summary>Pindah langsung tanpa cek tabrakan (dipakai saat spawn).</summary>
     public void PlaceAt(Vector2 position) => Position = position;

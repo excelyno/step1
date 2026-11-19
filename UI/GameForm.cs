@@ -13,7 +13,7 @@ public class GameForm : Form
 
     public GameForm()
     {
-        Text = "FarmGame - MVP 0";
+        Text = "FarmGame - MVP 1";
         ClientSize = new Size(GameConfig.ScreenWidth, GameConfig.ScreenHeight);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
@@ -75,6 +75,19 @@ public class GameForm : Form
     {
         _game.Input.KeyUp(e.KeyCode);
         base.OnKeyUp(e);
+    }
+
+    // MVP 1: mouse (klik kiri = pakai alat, klik kanan = periksa, roda = ganti slot)
+    protected override void OnMouseDown(MouseEventArgs e)
+    {
+        _game.Input.MouseDown(e.Button);
+        base.OnMouseDown(e);
+    }
+
+    protected override void OnMouseWheel(MouseEventArgs e)
+    {
+        _game.Input.MouseWheel(e.Delta);
+        base.OnMouseWheel(e);
     }
 
     protected override void OnDeactivate(EventArgs e)
