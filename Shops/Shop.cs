@@ -34,7 +34,14 @@ public abstract class Shop
     /// </summary>
     public ActionResult Buy(ShopEntry entry, int quantity, Player buyer, ItemRegistry items)
     {
+        // MVP 9: upgrade tas bukan barang — dibeli = tas langsung diperbesar
+        if (entry.Item is BackpackUpgrade pack)
+            return BuyBackpack(pack, buyer);
+
         Item item = items.Create(entry.Item.Id);   // objek baru, bukan contoh di etalase
+
+        // Alat (MaxStack 1) tidak bisa dibeli bertumpuk: beli 5 via Shift = tetap 1 buah
+        quantity = Math.Clamp(quantity, 1, item.MaxStack);
         int total = entry.Price * quantity;
 
         if (!buyer.Inventory.CanFit(item, quantity))
@@ -45,5 +52,25 @@ public abstract class Shop
 
         buyer.Inventory.TryAdd(item, quantity);
         return ActionResult.Ok($"Beli {quantity}x {item.Name} (-{total}g)");
+    }
+
+    /// <summary>MVP 9: beli upgrade tas. Cek level (tidak bisa loncat / beli dua kali), bayar, lalu perbesar.</summary>
+    private ActionResult BuyBackpack(BackpackUpgrade pack, Player buyer)
+    {
+        Inventory inv = buyer.Inventory;
+        int targetLevel = pack.Id == "backpack_l2" ? 2 : 1;
+
+        if (inv.BackpackLevel >= targetLevel)
+            return ActionResult.Fail("Tasmu sudah setingkat ini atau lebih besar.");
+
+        // Lompatan langsung ke level 2 tanpa level 1 juga ditolak (slot harus konsisten)
+        if (targetLevel == 2 && inv.Capacity < GameConfig.BackpackL1Slots)
+            return ActionResult.Fail("Beli Tas Besar dulu sebelum Tas Raksasa.");
+
+        if (!buyer.Wallet.TrySpend(pack.BasePrice))
+            return ActionResult.Fail("Uangmu tidak cukup.");
+
+        inv.Expand(pack.ExtraSlots, targetLevel);
+        return ActionResult.Ok($"{pack.Name}! Tas sekarang {inv.Capacity} slot (-{pack.BasePrice}g)");
     }
 }

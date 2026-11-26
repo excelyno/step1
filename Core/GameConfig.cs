@@ -58,6 +58,24 @@ public static class GameConfig
     public const int PestChancePercent = 12;   // peluang hama baru tiap pagi, per tanaman
     public const int PestPenaltyDays = 2;      // hama dibiarkan selama ini -> panen -1 buah
 
+    // MVP 8: daya tahan alat (banyak pemakaian sampai hancur) dan harga di toko Bu Sari
+    public const int HoeDurability = 40;    // cangkul tua warisan kakek
+    public const int CanDurability = 90;
+    public const int AxeDurability = 90;
+    public const int PickaxeDurability = 90;
+    public const int RodDurability = 120;
+    public const int CanPrice = 80;
+    public const int AxePrice = 100;
+    public const int PickaxePrice = 100;
+    public const int RodPrice = 120;
+
+    // MVP 9: tas (backpack) 3 level. Level awal = 12 slot; tiap upgrade menambah slot.
+    public const int BackpackBaseSlots = 12;
+    public const int BackpackL1Slots = 18;
+    public const int BackpackL2Slots = 24;
+    public const int BackpackL1Price = 300;
+    public const int BackpackL2Price = 800;
+
     // Lokasi file
     public static readonly string MapFolder = Path.Combine("Content", "Maps");
     public static readonly string DataFolder = Path.Combine("Content", "Data");

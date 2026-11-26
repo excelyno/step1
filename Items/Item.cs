@@ -25,6 +25,9 @@ public abstract class Item
     /// <summary>Isi bar kecil di ikon (0..1), misalnya sisa air. null = tidak ada bar.</summary>
     public virtual float? MeterRatio => null;
 
+    /// <summary>Warna bar meter di toolbar. Default biru (air).</summary>
+    public virtual Color MeterColor => Color.DeepSkyBlue;
+
     protected Item(string id, string name, string description, int basePrice)
     {
         Id = id;

@@ -43,6 +43,9 @@ public interface IGameServices
     /// <summary>Pesan singkat di kiri bawah (toast).</summary>
     void Notify(string message, bool success = true);
 
+    /// <summary>MVP 8: alat habis daya tahannya — hancur dan hilang dari tas pemain.</summary>
+    void BreakTool(Tool tool);
+
     /// <summary>Efek partikel di posisi dunia (serpihan kayu, percikan air, ...).</summary>
     void SpawnEffect(EffectKind kind, Vector2 worldPosition);
 

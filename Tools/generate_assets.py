@@ -1433,6 +1433,33 @@ def seed_packet(crop):
     return img
 
 
+def make_backpack(bigger=False):
+    """Tas belanja pemain. bigger = tas besar (level 3): lebih lebar + dijahit dua lipatan."""
+    rows = [
+        "................",
+        ".....DD..DD.....",
+        "....D..DD..D....",     # tali
+        "....D......D....",
+        "....dDDDDDDd....",
+        "....dCCCCCCd....",
+        "...DdCCCCCCdD...",
+        "...DCChhhhCCD...",
+        "...DChhhhhhCD...",
+        "...DCChhhhCCD...",
+        "...DdCCCCCCdD...",
+        "....dCCCCCCd....",
+        "....dCCwwCCd....",     # saku depan
+        ".....dDDDDd.....",
+        "................",
+        "................",
+    ]
+    if bigger:
+        rows[4] = "...dDDDDDDDDd..."
+        rows[5] = "...dCCCCCCCCd..."
+    pal = {"D": "#7a4a2a", "d": "#a3713f", "C": "#c99a5b", "h": "#e8d3a3", "w": "#8a5a32"}
+    return icon(rows, pal)
+
+
 def make_hoe():
     img = new(16, 16)
     px = img.load()
@@ -3400,6 +3427,8 @@ def main():
 
     # ikon item (nama = Item.SpriteKey)
     save(make_hoe(), "Items", "tool_hoe")
+    save(make_backpack(False), "Items", "backpack_small")
+    save(make_backpack(True), "Items", "backpack_large")
     save(make_can(), "Items", "tool_watering_can")
     for crop, (rows, pal) in PRODUCE_ICONS.items():
         save(icon(rows, pal), "Items", f"produce_{crop}")

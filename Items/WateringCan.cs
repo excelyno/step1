@@ -9,7 +9,7 @@ public class WateringCan : Tool
     public int Capacity { get; } = GameConfig.WateringCanCapacity;
     public int WaterLeft { get; private set; }
 
-    public WateringCan() : base("watering_can", "Penyiram", "Menyiram tanaman. Isi ulang di sungai, kolam, atau sumur.")
+    public WateringCan() : base("watering_can", "Penyiram", "Menyiram tanaman. Isi ulang di sungai, kolam, atau sumur.", GameConfig.CanDurability)
     {
         WaterLeft = Capacity;
     }
@@ -22,6 +22,9 @@ public class WateringCan : Tool
 
     /// <summary>Bar biru di toolbar = sisa air.</summary>
     public override float? MeterRatio => (float)WaterLeft / Capacity;
+
+    /// <summary>Mengisi ulang air tidak memakan daya tahan; hanya menyiram yang memakai.</summary>
+    protected override bool ShouldSpendDurability(ActionContext context) => !IsFacingWater(context);
 
     /// <summary>Mengisi air di kolam tidak memakai energi.</summary>
     protected override int GetEnergyCost(ActionContext context)

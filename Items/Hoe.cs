@@ -1,9 +1,9 @@
 namespace FarmGame.Items;
 
-/// <summary>Cangkul: mengubah tanah (Dirt) yang kosong menjadi HoeDirt yang siap ditanami.</summary>
+/// <summary>Cangkul tua warisan kakek: daya tahannya rendah, penggantinya dibeli di toko.</summary>
 public class Hoe : Tool
 {
-    public Hoe() : base("hoe", "Cangkul", "Mengolah tanah agar bisa ditanami.")
+    public Hoe() : base("hoe", "Cangkul Tua", "Cangkul warisan kakek. Sudah uzur — buat cangkul baru di toko Bu Sari.", GameConfig.HoeDurability)
     {
     }
 

@@ -33,12 +33,12 @@
   },
   {
     "id": "q3_wood_for_stall", "title": "Kayu untuk Kios", "giver": "sari", "requires": ["q1_welcome"],
-    "description": "Atap kios Bu Sari bocor. Ia butuh 20 Kayu. Tebang pohon atau kumpulkan ranting dengan kapak.",
+    "description": "Atap kiosku bocor. Ia butuh 20 Kayu. Beli kapak di tokoku lalu tebang pohon.",
     "objective": { "type": "bring", "npc": "sari", "item": "wood", "amount": 20 },
     "startText": [
       "Kamu pendatang baru, ya? Aku Sari, penjual bibit di desa ini.",
       "Atap kiosku bocor kalau hujan. Bisakah kamu bawakan 20 Kayu?",
-      "Pakai kapak untuk menebang pohon. Pohonnya akan tumbuh lagi, kok."
+      "Kapak dijual di tokoku, lho. Pohonnya akan tumbuh lagi, kok."
     ],
     "endText": [
       "Terima kasih banyak! Kiosku aman sekarang.",
@@ -52,10 +52,10 @@
     "objective": { "type": "talk", "npc": "raka" },
     "startText": [
       "Oh ya, ada anak muda bernama Raka. Ia selalu memancing di dermaga sungai, di selatan alun-alun.",
-      "Temuilah dia. Pancing yang dipegangmu itu dulu milik kakekmu, lho."
+      "Temuilah dia. Kalau mau memancing, beli pancing di toko Bu Sari dulu."
     ],
     "endText": [
-      "Hah? Itu pancing Pak Wiryo! Aku belajar memancing dari beliau.",
+      "Oh, kamu belum punya pancing? Pancing Pak Wiryo dulu kubeli dari toko Sari.",
       "Caranya: hadap air, tekan C. Tunggu tanda seru, lalu tarik!",
       "Waktu menarik, tekan C saat jarum ada di zona hijau. Gampang, kan?"
     ],
@@ -77,12 +77,12 @@
   },
   {
     "id": "q6_stone_for_well", "title": "Sumur Desa", "giver": "darto", "requires": ["q3_wood_for_stall", "q5_fish_for_raka"],
-    "description": "Sumur desa retak. Pak Darto butuh 25 Batu. Pecahkan batu dan kerikil dengan beliung.",
+    "description": "Sumur desa retak. Pak Darto butuh 25 Batu. Beli beliung di toko lalu pecahkan batu.",
     "objective": { "type": "bring", "npc": "darto", "item": "stone", "amount": 25 },
     "startText": [
       "Semua warga mulai membicarakanmu. Sari dan Raka senang sekali.",
       "Aku punya satu permintaan lagi. Sumur desa retak dan airnya merembes.",
-      "Bawakan 25 Batu. Pakai beliung untuk memecahkan batu di kebunmu."
+      "Bawakan 25 Batu. Beliung dijual di toko Sari; batu banyak di sekitar kebun dan hutan."
     ],
     "endText": [
       "Ini cukup untuk memperbaiki sumur! Seluruh desa berterima kasih padamu."

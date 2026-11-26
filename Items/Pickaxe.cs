@@ -3,7 +3,7 @@ namespace FarmGame.Items;
 /// <summary>Beliung: memecah batu dan kerikil. Juga bisa meratakan tanah dicangkul yang kosong.</summary>
 public class Pickaxe : BreakingTool
 {
-    public Pickaxe() : base("pickaxe", "Beliung", "Memecah batu. Meratakan tanah yang dicangkul.")
+    public Pickaxe() : base("pickaxe", "Beliung", "Memecah batu. Meratakan tanah yang dicangkul.", GameConfig.PickaxeDurability)
     {
     }
 

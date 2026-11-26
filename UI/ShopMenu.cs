@@ -54,16 +54,21 @@ public class ShopMenu
         g.FillRectangle(panel, x, y, PanelWidth, height);
         g.DrawRectangle(frame, x, y, PanelWidth, height);
 
-        // Judul + uang
-        g.DrawString($"{shop.Name} {shop.OwnerName}", _title, Brushes.White, x + 16, y + 10);
+        // Judul + uang. Judul dipotong (ellipsis) supaya tidak menabrak angka uang di kanan.
         using SolidBrush goldBrush = new(Color.Gold);
         string goldText = $"{gold} g";
         float goldWidth = g.MeasureString(goldText, _title).Width;
+        var titleClip = new RectangleF(x + 16, y + 8, PanelWidth - goldWidth - 48, 30);
+        using StringFormat titleFormat = new() { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        g.DrawString($"{shop.Name} {shop.OwnerName}", _title, Brushes.White, titleClip, titleFormat);
         g.DrawString(goldText, _title, goldBrush, x + PanelWidth - goldWidth - 16, y + 10);
 
         // Daftar barang
         var list = new Rectangle(x + 12, y + 48, PanelWidth - 24, rows * RowHeight + 8);
         g.FillRectangle(paper, list);
+
+        // Gulir: baris terpilih selalu terlihat (dipakai juga untuk indikator gulir)
+        int first = Math.Clamp(selected - MaxVisibleRows + 1, 0, Math.Max(0, stock.Count - MaxVisibleRows));
 
         if (stock.Count == 0)
         {
@@ -71,8 +76,6 @@ public class ShopMenu
         }
         else
         {
-            // Gulir: baris terpilih selalu terlihat
-            int first = Math.Clamp(selected - MaxVisibleRows + 1, 0, Math.Max(0, stock.Count - MaxVisibleRows));
             for (int i = 0; i < rows; i++)
             {
                 int index = first + i;
@@ -81,9 +84,21 @@ public class ShopMenu
             }
         }
 
-        // Petunjuk tombol
-        string help = "W/S atau mouse pilih  ·  klik kiri / C beli  ·  Shift = 5  ·  X/Esc/klik kanan keluar";
-        g.DrawString(help, _small, Brushes.White, x + 16, y + height - 28);
+        // Petunjuk tombol — dua baris pendek supaya muat di dalam panel
+        g.DrawString("W/S atau mouse pilih  ·  klik kiri / C = beli  ·  Shift = 5", _small, Brushes.White, x + 16, y + height - 44);
+        g.DrawString("X / Esc / klik kanan = keluar", _small, Brushes.White, x + 16, y + height - 26);
+
+        // Indikator gulir: ada barang di luar 6 baris yang terlihat
+        if (stock.Count > MaxVisibleRows)
+        {
+            bool canUp = first > 0;
+            bool canDown = first + rows < stock.Count;
+            using SolidBrush arrow = new(Color.FromArgb(230, 255, 235, 190));
+            string up = canUp ? "▲" : " ";
+            string down = canDown ? "▼" : " ";
+            g.DrawString(up, _normal, arrow, x + PanelWidth - 34, y + 50);
+            g.DrawString(down, _normal, arrow, x + PanelWidth - 34, y + height - 76);
+        }
     }
 
     private void DrawRow(Graphics g, ShopEntry entry, Rectangle row, bool isSelected, bool isHovered, int gold)
@@ -108,13 +123,17 @@ public class ShopMenu
         // Ikon 32x32 (sprite 16px diperbesar 2x = tetap tajam)
         _assets.DrawSprite(g, entry.Item.SpriteKey, new RectangleF(row.X + 6, row.Y + 5, 32, 32));
 
-        g.DrawString(entry.Item.Name, _normal, Brushes.Black, row.X + 48, row.Y + 3);
-        g.DrawString(entry.Info, _small, Brushes.DimGray, row.X + 48, row.Y + 22);
-
-        // Harga: merah kalau uang tidak cukup
+        // Harga: merah kalau uang tidak cukup. Lebar harga dicadangkan, sisanya untuk nama & info.
         Brush priceBrush = entry.Price <= gold ? Brushes.DarkGreen : Brushes.Firebrick;
         string price = $"{entry.Price} g";
         float width = g.MeasureString(price, _normal).Width;
         g.DrawString(price, _normal, priceBrush, row.Right - width - 10, row.Y + 11);
+
+        // Nama & info dipotong (ellipsis) supaya tidak menimpa kolom harga / keluar baris
+        float textWidth = row.Width - 48 - width - 24;
+        var clip = new RectangleF(row.X + 48, row.Y + 2, textWidth, RowHeight - 6);
+        using StringFormat trim = new() { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
+        g.DrawString(entry.Item.Name, _normal, Brushes.Black, new RectangleF(clip.X, clip.Y, clip.Width, 18), trim);
+        g.DrawString(entry.Info, _small, Brushes.DimGray, new RectangleF(clip.X, clip.Y + 19, clip.Width, 16), trim);
     }
 }

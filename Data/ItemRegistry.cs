@@ -18,6 +18,14 @@ public class ItemRegistry
     /// <summary>Selalu membuat objek BARU (penting untuk alat yang punya isi, misalnya air penyiram).</summary>
     public Item Create(string id)
     {
+        // MVP 9: upgrade tas (3 level). Bukan barang: dibeli = tas langsung diperbesar Shop.
+        if (id == "backpack_l1") return new BackpackUpgrade("backpack_l1", "Tas Besar",
+            "Perbesar tas dari 12 jadi 18 slot. Isi tasmu tetap aman.",
+            GameConfig.BackpackL1Slots - GameConfig.BackpackBaseSlots, GameConfig.BackpackL1Price, "backpack_small");
+        if (id == "backpack_l2") return new BackpackUpgrade("backpack_l2", "Tas Raksasa",
+            "Perbesar tas dari 18 jadi 24 slot. Untuk petani sejati.",
+            GameConfig.BackpackL2Slots - GameConfig.BackpackL1Slots, GameConfig.BackpackL2Price, "backpack_large");
+
         // Alat
         if (id == "hoe") return new Hoe();
         if (id == "watering_can") return new WateringCan();

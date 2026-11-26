@@ -6,7 +6,7 @@ namespace FarmGame.Saving;
 /// </summary>
 public class SaveData
 {
-    public int Version { get; set; } = 4;   // 2 = kotak kirim per slot, 3 = bintang minigame, 4 = seed hutan
+    public int Version { get; set; } = 6;   // 2 = kotak kirim per slot, 3 = bintang, 4 = seed hutan, 5 = daya tahan alat, 6 = upgrade tas
     public string SavedAt { get; set; } = "";
 
     // Seed dunia (bentuk hutan prosedural). 0 = simpanan lama sebelum MVP 7.
@@ -26,6 +26,7 @@ public class SaveData
     public int Gold { get; set; }
     public int Stamina { get; set; }
     public int SelectedSlot { get; set; }
+    public int BackpackLevel { get; set; }        // MVP 9: level tas (0 = standar 12 slot)
     public List<SlotSave> Inventory { get; set; } = new();
 
     // Warga, quest, surat
@@ -51,5 +52,6 @@ public class SlotSave
     public int Slot { get; set; }
     public string Item { get; set; } = "";
     public int Quantity { get; set; }
-    public int Water { get; set; } = -1;   // isi penyiram (-1 = bukan penyiram)
+    public int Water { get; set; } = -1;           // isi penyiram (-1 = bukan penyiram)
+    public int Durability { get; set; } = -1;      // sisa daya tahan alat (MVP 8; -1 = bukan alat / penuh)
 }

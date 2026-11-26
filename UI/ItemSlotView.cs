@@ -39,9 +39,9 @@ public static class ItemSlotView
         if (meter != null)
         {
             using SolidBrush back2 = new(Color.FromArgb(60, 40, 30));
-            using SolidBrush water = new(Color.DeepSkyBlue);
+            using SolidBrush fill = new(stack.Item.MeterColor);
             g.FillRectangle(back2, slot.X + 6, slot.Bottom - 8, slot.Width - 12, 4);
-            g.FillRectangle(water, slot.X + 6, slot.Bottom - 8, (slot.Width - 12) * meter.Value, 4);
+            g.FillRectangle(fill, slot.X + 6, slot.Bottom - 8, (slot.Width - 12) * meter.Value, 4);
         }
     }
 

@@ -7,7 +7,8 @@ namespace FarmGame.Items;
 /// </summary>
 public abstract class BreakingTool : Tool
 {
-    protected BreakingTool(string id, string name, string description) : base(id, name, description)
+    protected BreakingTool(string id, string name, string description, int maxDurability)
+        : base(id, name, description, maxDurability)
     {
     }
 

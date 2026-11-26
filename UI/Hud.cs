@@ -12,7 +12,7 @@ public class Hud
     /// <summary>Kotak satu slot toolbar di layar (dipakai PlayingState untuk klik mouse).</summary>
     public static Rectangle ToolbarSlotRect(int index, int capacity)
     {
-        int totalWidth = capacity * SlotSize;
+        int totalWidth = VisibleSlots(capacity) * SlotSize;
         int x0 = (GameConfig.ScreenWidth - totalWidth) / 2;
         int y = GameConfig.ScreenHeight - SlotSize - 14;
         return new Rectangle(x0 + index * SlotSize, y, SlotSize, SlotSize);
@@ -21,7 +21,7 @@ public class Hud
     /// <summary>Seluruh bingkai toolbar (termasuk tepi). Klik di sini tidak boleh memakai alat.</summary>
     public static Rectangle ToolbarAreaRect(int capacity)
     {
-        int totalWidth = capacity * SlotSize;
+        int totalWidth = VisibleSlots(capacity) * SlotSize;
         int x0 = (GameConfig.ScreenWidth - totalWidth) / 2;
         int y = GameConfig.ScreenHeight - SlotSize - 14;
         return new Rectangle(x0 - 10, y - 10, totalWidth + 20, SlotSize + 20);
@@ -34,6 +34,21 @@ public class Hud
 
     // Label tombol di bawah tiap slot
     private static readonly string[] SlotLabels = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" };
+
+    /// <summary>
+    /// Jumlah slot yang DIGAMBAR di toolbar. Toolbar dirancang untuk 12 slot di tengah bawah;
+    /// kalau tas diperbesar lewat upgrade, sisanya tetap ada dan dilihat lewat menu tas (tombol B).
+    /// Semua tempat lain (hover, klik, sorot) WAJIB memakai nilai ini supaya tidak meleset —
+    /// dulu crash IndexOutOfRange karena label hanya 12 tapi loop mengikuti Capacity.
+    /// </summary>
+    public const int VisibleToolbarSlots = 12;
+
+    /// <summary>Jumlah slot toolbar yang tampil: Capacity di-clamp ke jumlah slot fisik toolbar.</summary>
+    public static int VisibleSlots(int capacity) => Math.Min(capacity, VisibleToolbarSlots);
+
+    /// <summary>Label tombol slot ke-i (null = tanpa label).</summary>
+    public static string? SlotLabel(int index) =>
+        index >= 0 && index < SlotLabels.Length ? SlotLabels[index] : null;
 
     // ---------- MVP 5: widget beranimasi ----------
     private const float BannerSeconds = 3f;
@@ -238,7 +253,9 @@ public class Hud
 
     private void DrawToolbar(Graphics g, Inventory inventory, int hoverSlot)
     {
-        int totalWidth = inventory.Capacity * SlotSize;
+        // Toolbar fisik hanya 12 slot walau tas lebih besar (sisanya lewat tombol B).
+        int shown = VisibleSlots(inventory.Capacity);
+        int totalWidth = shown * SlotSize;
         int x0 = (GameConfig.ScreenWidth - totalWidth) / 2;
         int y = GameConfig.ScreenHeight - SlotSize - 14;
 
@@ -247,7 +264,7 @@ public class Hud
         using Pen border = new(Color.FromArgb(150, 100, 60), 2);
         using Pen selected = new(Color.OrangeRed, 3);
 
-        for (int i = 0; i < inventory.Capacity; i++)
+        for (int i = 0; i < shown; i++)
         {
             var slot = new Rectangle(x0 + i * SlotSize, y, SlotSize, SlotSize);
             g.FillRectangle(slotBrush, slot);
@@ -264,16 +281,33 @@ public class Hud
                 g.DrawRectangle(hover, inner);
             }
 
-            g.DrawString(SlotLabels[i], _small, Brushes.DimGray, slot.X + 2, slot.Y);
+            string? label = SlotLabel(i);
+            if (label != null)
+                g.DrawString(label, _small, Brushes.DimGray, slot.X + 2, slot.Y);
         }
 
-        // Sorotan slot terpilih
-        var chosen = new Rectangle(x0 + inventory.SelectedIndex * SlotSize, y, SlotSize, SlotSize);
-        g.DrawRectangle(selected, chosen);
+        // Sorotan slot terpilih (hanya kalau slot itu memang tampil di toolbar)
+        if (inventory.SelectedIndex < shown)
+        {
+            var chosen = new Rectangle(x0 + inventory.SelectedIndex * SlotSize, y, SlotSize, SlotSize);
+            g.DrawRectangle(selected, chosen);
+        }
 
-        // Nama item terpilih di atas toolbar
+        // Indikasi tas lebih besar dari toolbar: "...+N di tas (B)"
+        if (inventory.Capacity > shown)
+        {
+            string more = $"+{inventory.Capacity - shown} lagi di tas (B)";
+            DrawTextWithShadow(g, more, _small, x0 + totalWidth + 14, y + SlotSize / 2 - 8);
+        }
+
+        // Nama item terpilih di atas toolbar (alat: + sisa daya tahan)
         if (inventory.SelectedItem != null)
-            DrawTextWithShadow(g, inventory.SelectedItem.Name, _normal, x0, y - 38);
+        {
+            string label = inventory.SelectedItem.Name;
+            if (inventory.SelectedItem is Tool tool)
+                label += tool.IsBroken ? "  (HANCUR)" : $"  {tool.Durability}/{tool.MaxDurability}";
+            DrawTextWithShadow(g, label, _normal, x0, y - 38);
+        }
     }
 
     private void DrawStack(Graphics g, ItemStack stack, Rectangle slot)
@@ -286,14 +320,14 @@ public class Hud
         if (stack.Quantity > 1)
             DrawTextWithShadow(g, stack.Quantity.ToString(), _small, slot.Right - 22, slot.Bottom - 17);
 
-        // Bar kecil (hanya penyiram yang punya)
+        // Bar kecil: penyiram = sisa air (biru), alat lain = daya tahan (hijau/kuning/merah)
         float? meter = stack.Item.MeterRatio;
         if (meter != null)
         {
             using SolidBrush back = new(Color.FromArgb(60, 40, 30));
-            using SolidBrush water = new(Color.DeepSkyBlue);
+            using SolidBrush fill = new(stack.Item.MeterColor);
             g.FillRectangle(back, slot.X + 6, slot.Bottom - 8, slot.Width - 12, 4);
-            g.FillRectangle(water, slot.X + 6, slot.Bottom - 8, (slot.Width - 12) * meter.Value, 4);
+            g.FillRectangle(fill, slot.X + 6, slot.Bottom - 8, (slot.Width - 12) * meter.Value, 4);
         }
     }
 

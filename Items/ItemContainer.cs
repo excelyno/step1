@@ -7,7 +7,7 @@ namespace FarmGame.Items;
 /// </summary>
 public class ItemContainer
 {
-    private readonly ItemStack?[] _slots;
+    private ItemStack?[] _slots;
 
     public int Capacity => _slots.Length;
 
@@ -96,8 +96,7 @@ public class ItemContainer
 
     /// <summary>Ambil 'amount' barang yang cocok, dari slot kiri ke kanan. Cek CountMatching dulu.</summary>
     public void RemoveMatching(string pattern, int amount)
-    {
-        for (int i = 0; i < Capacity && amount > 0; i++)
+    {        for (int i = 0; i < Capacity && amount > 0; i++)
         {
             ItemStack? stack = _slots[i];
             if (stack == null || !stack.Item.Matches(pattern))
@@ -130,5 +129,32 @@ public class ItemContainer
         ItemStack? stack = _slots[index];
         _slots[index] = null;
         return stack;
+    }
+
+    /// <summary>
+    /// MVP 8: buang SATU tumpukan yang bertepatan dengan objek tertentu (bukan sekadar id).
+    /// Dipakai saat alat hancur: alat hancur dihapus dari tas. True = ada yang dibuang.
+    /// </summary>
+    public bool RemoveExact(Item item)
+    {
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            if (ReferenceEquals(_slots[i]?.Item, item))
+            {
+                _slots[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>MVP 9: perbesar wadah, isi slot lama tetap. Hanya dipakai Inventory untuk upgrade tas.</summary>
+    protected void Grow(int extraSlots)
+    {
+        if (extraSlots <= 0)
+            return;
+        var bigger = new ItemStack?[Capacity + extraSlots];
+        Array.Copy(_slots, bigger, _slots.Length);
+        _slots = bigger;
     }
 }

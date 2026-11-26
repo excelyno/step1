@@ -3,7 +3,7 @@ namespace FarmGame.Items;
 /// <summary>Kapak: menebang pohon dan membersihkan ranting. Hasilnya kayu.</summary>
 public class Axe : BreakingTool
 {
-    public Axe() : base("axe", "Kapak", "Menebang pohon dan ranting.")
+    public Axe() : base("axe", "Kapak", "Menebang pohon dan ranting.", GameConfig.AxeDurability)
     {
     }
 

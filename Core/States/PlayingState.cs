@@ -43,6 +43,14 @@ public class PlayingState : GameState
             return;
         }
 
+        // MVP 9: B = buka tas
+        if (input.WasPressed(Keys.B))
+        {
+            Game.ChangeState(new BackpackState(Game));
+            Game.PlaySound("ui_open");
+            return;
+        }
+
         // MVP 5: Esc = menu jeda (lanjut / simpan / keluar ke judul)
         if (input.WasPressed(Keys.Escape))
         {
@@ -91,7 +99,8 @@ public class PlayingState : GameState
         if (!Hud.ToolbarAreaRect(capacity).Contains(mouse))
             return false;
 
-        for (int i = 0; i < capacity; i++)
+        // Hanya slot yang tampil di toolbar (12). Slot tambahan dipilih lewat menu tas (B).
+        for (int i = 0; i < Hud.VisibleSlots(capacity); i++)
         {
             if (Hud.ToolbarSlotRect(i, capacity).Contains(mouse))
             {

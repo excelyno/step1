@@ -52,6 +52,7 @@ public static class SaveSystem
             Gold = player.Wallet.Gold,
             Stamina = player.Stamina.Current,
             SelectedSlot = player.Inventory.SelectedIndex,
+            BackpackLevel = player.Inventory.BackpackLevel,
             LessonStars = game.Lessons.ToSave(),
             Friendship = new Dictionary<string, int>(player.Relationships.AllPoints),
             TalkedToday = player.Relationships.TalkedToday.ToList(),
@@ -88,6 +89,7 @@ public static class SaveSystem
         Item = stack.Item.Id,
         Quantity = stack.Quantity,
         Water = stack.Item is WateringCan can ? can.WaterLeft : -1,
+        Durability = stack.Item is Tool tool ? tool.Durability : -1,
     };
 
     // ---------- Muat ----------
@@ -122,10 +124,16 @@ public static class SaveSystem
         game.Lessons.Restore(data.LessonStars);
 
         player.Inventory.Clear();
+        // MVP 9: kembalikan dulu ukuran tas sesuai level tersimpan, baru isi slotnya
+        int savedBackpack = Math.Clamp(data.BackpackLevel, 0, 2);
+        if (savedBackpack >= 1)
+            player.Inventory.Expand(GameConfig.BackpackL1Slots - GameConfig.BackpackBaseSlots, 1);
+        if (savedBackpack >= 2)
+            player.Inventory.Expand(GameConfig.BackpackL2Slots - GameConfig.BackpackL1Slots, 2);
         foreach (SlotSave slot in data.Inventory)
         {
             ItemStack? stack = FromSlot(game.Items, slot);
-            if (stack != null)
+            if (stack != null && slot.Slot < player.Inventory.Capacity)   // slot di luar kapasitas (mis. save lama) dilewati
                 player.Inventory.SetSlot(slot.Slot, stack);
         }
         player.Inventory.Select(data.SelectedSlot);
@@ -179,6 +187,8 @@ public static class SaveSystem
             Item item = items.Create(slot.Item);
             if (item is WateringCan can && slot.Water >= 0)
                 can.RestoreWater(slot.Water);
+            if (item is Tool tool && slot.Durability >= 0)
+                tool.RestoreDurability(slot.Durability);
             return new ItemStack(item, Math.Max(1, slot.Quantity));
         }
         catch (GameDataException)

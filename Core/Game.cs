@@ -21,7 +21,7 @@ public class Game : IGameServices
     private static readonly Dictionary<string, (string Title, string Subtitle)> LocationBanners = new()
     {
         { Farm.LocationName, ("Kebun Kakek", "Ladang, sumur, dan kolam di tepi hutan") },
-        { Town.LocationName, ("Desa Tandur", "Alun-alun, toko bibit, dan dermaga sungai") },
+        { Town.LocationName, ("Desa Tandur", "Alun-alun, toko bibit & alat, dan dermaga sungai") },
         { Forest.LocationName, ("Hutan Tandur", "Kayu, batu, dan barang liar — pulih setiap hari") },
     };
 
@@ -105,7 +105,7 @@ public class Game : IGameServices
         Fish = new FishDatabase(DataPath("fish.json"));
         LessonData = new LessonDatabase(DataPath("lessons.json"), Crops);
         Items = new ItemRegistry(Crops, Fish);
-        SeedShop = new SeedShop(Crops, Items);
+        SeedShop = new SeedShop(Crops, Items);   // MVP 9: pemain di-bind saat CreateWorld
         Npcs = new NpcDatabase(DataPath("npcs.json"));
 
         // 2. Tampilan
@@ -152,6 +152,7 @@ public class Game : IGameServices
         AddLocation(Forest);
 
         Player = new Player("Petani");
+        SeedShop.BindPlayer(Player);   // MVP 9: etalase tas menyesuaikan level pemain
         CurrentLocation = FarmHouse;
         Particles.Clear();
         Popups.Clear();
@@ -223,10 +224,12 @@ public class Game : IGameServices
             "Cucuku tersayang,",
             "Kalau kamu membaca surat ini, berarti kebunku sekarang milikmu.",
             "Dulu kebun ini yang paling subur di Desa Tandur. Sekarang penuh ranting dan batu karena aku sudah terlalu tua.",
-            "Aku tinggalkan cangkul, penyiram, kapak, beliung, pancing, dan sedikit bibit parsnip.",
+            "Aku hanya tinggalkan cangkul tua dan sedikit bibit parsnip. Alatnya sudah uzur —",
+            "beli penyiram, kapak, beliung, atau pancing di Toko Bu Sari di desa selatan. Tas lama ini",
+            "juga makin sesak (tekan B untuk melihatnya); Bu Sari bisa menjahitnya jadi lebih besar.",
             "Temuilah Pak Darto, kepala desa, di alun-alun desa sebelah selatan. Ia sahabat lamaku.",
             "Oh ya, jangan lupa periksa kotak surat di depan rumah. Warga desa suka berkirim surat.",
-            "Rawat kebun ini baik-baik, ya.  - Kakek Wiryo",
+            "Dan ingat: alat itu tidak abadi. Kalau hancur, beli yang baru. Rawat kebun ini baik-baik, ya.  - Kakek Wiryo",
         };
         ShowDialogue("Surat Kakek", letter, () =>
         {
@@ -237,11 +240,8 @@ public class Game : IGameServices
 
     private void GiveStartingItems()
     {
+        // MVP 8: hanya cangkul tua warisan kakek. Alat lain dibeli di Toko Bu Sari (desa).
         Player.Inventory.TryAdd(Items.Create("hoe"));
-        Player.Inventory.TryAdd(Items.Create("watering_can"));
-        Player.Inventory.TryAdd(Items.Create("axe"));
-        Player.Inventory.TryAdd(Items.Create("pickaxe"));
-        Player.Inventory.TryAdd(Items.Create("fishing_rod"));
         Player.Inventory.TryAdd(Items.Create("parsnip_seeds"), 15);
     }
 
@@ -347,6 +347,21 @@ public class Game : IGameServices
     }
 
     public void Notify(string message, bool success = true) => Toasts.Push(message, success);
+
+    /// <summary>MVP 8: alat habis daya tahannya — hancur, keluar dari tas, suara + pesan.</summary>
+    public void BreakTool(Tool tool)
+    {
+        // Pindahkan pilihan slot kalau alat yang hancur sedang dipegang
+        int slot = Player.Inventory.Stacks
+            .Select((stack, i) => (stack, i))
+            .FirstOrDefault(x => ReferenceEquals(x.stack.Item, tool)).i;
+        Player.Inventory.RemoveExact(tool);
+        if (slot >= 0 && Player.Inventory.SelectedIndex == slot)
+            Player.Inventory.Select(Math.Min(slot, Player.Inventory.Capacity - 1));
+
+        PlaySound("wrong");
+        Notify($"{tool.Name} hancur! Beli yang baru di toko Bu Sari.", false);
+    }
 
     public void SpawnEffect(EffectKind kind, Vector2 worldPosition) => Particles.Emit(kind, worldPosition);
 
@@ -610,11 +625,12 @@ public class Game : IGameServices
             Hud.DrawQuestTracker(g, Quests.Active.Select(q => (q.Title, Quests.ProgressText(q, Player.Inventory, Npcs, Items))));
     }
 
-    /// <summary>Slot toolbar yang sedang ditunjuk mouse (-1 kalau tidak ada).</summary>
+    /// <summary>Slot toolbar yang sedang ditunjuk mouse (-1 kalau tidak ada). Hanya slot yang tampil.</summary>
     private int HoveredToolbarSlot()
     {
         Point mouse = Input.MousePosition;
-        for (int i = 0; i < Player.Inventory.Capacity; i++)
+        int shown = Hud.VisibleSlots(Player.Inventory.Capacity);
+        for (int i = 0; i < shown; i++)
         {
             if (Hud.ToolbarSlotRect(i, Player.Inventory.Capacity).Contains(mouse))
                 return i;

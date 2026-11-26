@@ -3,7 +3,7 @@ namespace FarmGame.Items;
 /// <summary>Pancing: menghadap air lalu C = lempar kail. Minigame-nya diurus FishingState.</summary>
 public class FishingRod : Tool
 {
-    public FishingRod() : base("fishing_rod", "Pancing", "Hadap ke air, lalu lempar kail.")
+    public FishingRod() : base("fishing_rod", "Pancing", "Hadap ke air, lalu lempar kail.", GameConfig.RodDurability)
     {
     }
 

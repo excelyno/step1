@@ -175,7 +175,7 @@ public class NoticeBoard : WorldObject, IInteractable
 {
     private static readonly string[] News =
     {
-        "PENGUMUMAN: Toko Bibit Bu Sari buka setiap hari pukul 09:00 - 17:00.",
+        "PENGUMUMAN: Toko Bibit & Alat Bu Sari buka setiap hari pukul 09:00 - 17:00.",
         "DICARI: teman memancing. Hubungi Raka di dermaga sungai.",
         "INFO: Jamur, beri hutan, dan bunga liar tumbuh sendiri di padang. Pungut lalu jual atau jadikan hadiah!",
         "PENGINGAT: Sumur di kebun bisa dipakai mengisi penyiram.",
