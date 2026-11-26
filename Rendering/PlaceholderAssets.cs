@@ -16,7 +16,14 @@ public class PlaceholderAssets : IAssetProvider
         { TileType.Water,    Color.FromArgb(74, 134, 196) },
         { TileType.Fence,    Color.FromArgb(120, 84, 50) },
         { TileType.Building, Color.FromArgb(150, 60, 60) },
+        { TileType.Floor,    Color.FromArgb(176, 128, 82) },
+        { TileType.Wall,     Color.FromArgb(90, 62, 48) },
+        { TileType.Bridge,   Color.FromArgb(160, 112, 70) },
+        { TileType.Cobble,   Color.FromArgb(170, 166, 160) },
     };
+
+    /// <summary>Kotak warna tidak mendukung tembus pandang; nilainya hanya disimpan.</summary>
+    public float Opacity { get; set; } = 1f;
 
     private readonly Font _letterFont = new("Segoe UI", 7f, FontStyle.Bold, GraphicsUnit.Pixel);
     private readonly StringFormat _center = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
@@ -41,6 +48,37 @@ public class PlaceholderAssets : IAssetProvider
         {
             Fill(g, Color.FromArgb(60, 90, 200), dest);
             DrawFacingMarker(g, parts[1], dest);   // "player_down_2" -> "down"
+        }
+        else if (category == "npc")
+        {
+            Fill(g, ColorFromName(parts[1]), dest);
+            DrawFacingMarker(g, parts[2], dest);   // "npc_sari_down_0" -> "down"
+        }
+        else if (category == "counter")
+        {
+            Fill(g, Color.FromArgb(150, 100, 55), new RectangleF(dest.X, dest.Y + dest.Height / 3, dest.Width, dest.Height * 2 / 3));
+        }
+        else if (category == "sign")
+        {
+            Fill(g, Color.FromArgb(170, 125, 75), new RectangleF(dest.X + 1, dest.Y + 2, dest.Width - 2, dest.Height / 2));
+            DrawLetter(g, "i", new RectangleF(dest.X, dest.Y + 2, dest.Width, dest.Height / 2));
+        }
+        else if (category is "bed" or "table" or "plant" or "fireplace" or "stump")
+        {
+            Fill(g, Color.FromArgb(120, 80, 50), dest);   // MVP 3: perabot & tunggul
+        }
+        else if (category is "rug" or "doormat" or "window" or "twig" or "pebble")
+        {
+            Fill(g, Color.FromArgb(90, 160, 140, 110), dest);   // benda tipis: kotak tembus pandang
+        }
+        else if (category == "resource" || category == "fish")
+        {
+            DrawIcon(g, ColorFromName(parts[1]), parts[1], dest);
+        }
+        else if (category == "shop")
+        {
+            // tile Building sudah terlihat; cukup tanda "$" di atasnya
+            DrawLetter(g, "$", new RectangleF(dest.X, dest.Y, dest.Width, dest.Height / 2));
         }
         else if (category == "hoedirt")
         {
@@ -75,6 +113,20 @@ public class PlaceholderAssets : IAssetProvider
         else if (category == "door")
         {
             Fill(g, Color.FromArgb(90, 50, 30), new RectangleF(dest.X + dest.Width * 0.2f, dest.Y, dest.Width * 0.6f, dest.Height));
+        }
+        else if (category == "marker")
+        {
+            Fill(g, parts[1] == "new" ? Color.Gold : Color.DeepSkyBlue, dest);   // MVP 4: tanda quest
+            DrawLetter(g, parts[1] == "new" ? "!" : "?", dest);
+        }
+        else if (category == "heart")
+        {
+            Fill(g, parts[1] == "full" ? Color.FromArgb(220, 60, 80) : Color.FromArgb(120, 90, 80), dest);
+        }
+        else if (category == "lamppost")
+        {
+            Fill(g, Color.FromArgb(60, 60, 70), new RectangleF(dest.X + dest.Width * 0.4f, dest.Y, dest.Width * 0.2f, dest.Height));
+            Fill(g, Color.FromArgb(255, 210, 120), new RectangleF(dest.X + dest.Width * 0.25f, dest.Y, dest.Width * 0.5f, dest.Height * 0.25f));
         }
         else if (category == "tool")
         {

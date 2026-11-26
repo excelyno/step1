@@ -37,8 +37,40 @@ public abstract class Tool : Item, IUsable
         if (result.Success && cost > 0)
             context.User.Stamina.Spend(cost);
 
+        // 4. MVP 4: efek partikel + suara di tile sasaran
+        if (result.Success)
+        {
+            EffectKind effect = GetUseEffect(context);
+            context.Services.SpawnEffect(effect, TileCenter(context.TargetTile));
+            PlaySoundFor(context, effect);
+        }
+
         return result;
     }
+
+    /// <summary>Suara khas alat. Diputar hanya kalau aksi benar-benar terjadi (bukan saat minigame tertunda).</summary>
+    private void PlaySoundFor(ActionContext context, EffectKind effect)
+    {
+        // Pancing punya layar sendiri; suaranya di FishingState
+        if (this is FishingRod)
+            return;
+
+        switch (effect)
+        {
+            case EffectKind.Dirt: context.Services.PlaySound("hoe"); break;
+            case EffectKind.Water: context.Services.PlaySound("water"); break;
+            case EffectKind.Splash: context.Services.PlaySound("water"); break;
+            case EffectKind.WoodChips: context.Services.PlaySound("wood"); break;
+            case EffectKind.StoneChips: context.Services.PlaySound("stone"); break;
+            default: break;
+        }
+    }
+
+    /// <summary>MVP 4: partikel saat berhasil dipakai. Default: tidak ada.</summary>
+    protected virtual EffectKind GetUseEffect(ActionContext context) => EffectKind.None;
+
+    public static Vector2 TileCenter(Point tile) =>
+        new(tile.X * GameConfig.TileSize + GameConfig.TileSize / 2f, tile.Y * GameConfig.TileSize + GameConfig.TileSize / 2f);
 
     /// <summary>Default = EnergyCost. Boleh ditimpa kalau biayanya tergantung situasi.</summary>
     protected virtual int GetEnergyCost(ActionContext context) => EnergyCost;

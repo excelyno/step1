@@ -35,6 +35,18 @@ public abstract class Item
 
     public virtual int GetSellPrice() => BasePrice;
 
+    /// <summary>
+    /// MVP 4: cocok dengan pola dari data JSON? Pola = id ("parsnip") atau kategori ("category:fish").
+    /// Dipakai quest ("bawakan 3 ikan apa saja") dan selera hadiah warga.
+    /// </summary>
+    public bool Matches(string pattern)
+    {
+        const string prefix = "category:";
+        if (pattern.StartsWith(prefix))
+            return string.Equals(Category.ToString(), pattern[prefix.Length..], StringComparison.OrdinalIgnoreCase);
+        return Id == pattern;
+    }
+
     /// <summary>Dua item bisa ditumpuk kalau Id-nya sama.</summary>
     public bool IsSameKind(Item other) => other.Id == Id;
 }

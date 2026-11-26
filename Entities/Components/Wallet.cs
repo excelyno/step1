@@ -18,6 +18,9 @@ public class Wallet
     }
 
     /// <summary>Kurangi uang kalau cukup (dipakai toko di MVP 2).</summary>
+    /// <summary>MVP 5: dari file simpanan.</summary>
+    public void Restore(int gold) => Gold = Math.Max(0, gold);
+
     public bool TrySpend(int amount)
     {
         if (amount <= 0 || amount > Gold)

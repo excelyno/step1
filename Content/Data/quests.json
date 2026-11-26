@@ -1,0 +1,109 @@
+[
+  // Cerita & quest (MVP 4). Satu baris objek = satu quest.
+  // giver    : id warga yang memberi quest. "" = otomatis mulai (setelah syaratnya selesai).
+  // requires : quest yang harus selesai dulu.
+  // objective: { "type": "talk", "npc": ... }  atau  { "type": "bring", "npc": ..., "item": ..., "amount": ... }
+  {
+    "id": "q1_welcome", "title": "Surat dari Kakek", "giver": "", "requires": [],
+    "description": "Kakek ingin aku menemui Pak Darto, kepala desa. Kota ada di selatan kebun.",
+    "objective": { "type": "talk", "npc": "darto" },
+    "startText": [],
+    "endText": [
+      "Oh! Kamu cucu Pak Wiryo? Selamat datang di Desa Tandur!",
+      "Kakekmu orang baik. Kebunnya dulu yang paling subur di desa ini.",
+      "Sejak ia sakit, kebun itu terbengkalai. Penuh ranting, batu, dan rumput liar.",
+      "Tapi aku yakin kamu bisa menghidupkannya lagi."
+    ],
+    "reward": { "gold": 100, "items": [], "friendship": 30 }
+  },
+  {
+    "id": "q2_first_harvest", "title": "Panen Pertama", "giver": "darto", "requires": ["q1_welcome"],
+    "description": "Pak Darto ingin melihat hasil panen pertamaku: 5 Parsnip.",
+    "objective": { "type": "bring", "npc": "darto", "item": "parsnip", "amount": 5 },
+    "startText": [
+      "Langkah pertama petani: panen pertama!",
+      "Kamu sudah punya bibit parsnip, kan? Cangkul tanah, tanam, lalu siram setiap hari.",
+      "Bawakan aku 5 Parsnip. Aku ingin mencicipi hasil kebun Wiryo lagi."
+    ],
+    "endText": [
+      "Wah, parsnip yang bagus sekali!",
+      "Rasanya persis seperti buatan kakekmu. Ini, terimalah bibit kentang ini."
+    ],
+    "reward": { "gold": 250, "items": [ { "id": "potato_seeds", "amount": 10 } ], "friendship": 50 }
+  },
+  {
+    "id": "q3_wood_for_stall", "title": "Kayu untuk Kios", "giver": "sari", "requires": ["q1_welcome"],
+    "description": "Atap kios Bu Sari bocor. Ia butuh 20 Kayu. Tebang pohon atau kumpulkan ranting dengan kapak.",
+    "objective": { "type": "bring", "npc": "sari", "item": "wood", "amount": 20 },
+    "startText": [
+      "Kamu pendatang baru, ya? Aku Sari, penjual bibit di desa ini.",
+      "Atap kiosku bocor kalau hujan. Bisakah kamu bawakan 20 Kayu?",
+      "Pakai kapak untuk menebang pohon. Pohonnya akan tumbuh lagi, kok."
+    ],
+    "endText": [
+      "Terima kasih banyak! Kiosku aman sekarang.",
+      "Ambil bibit kale ini. Hadiah dariku."
+    ],
+    "reward": { "gold": 200, "items": [ { "id": "kale_seeds", "amount": 5 } ], "friendship": 60 }
+  },
+  {
+    "id": "q4_meet_raka", "title": "Anak di Tepi Kolam", "giver": "darto", "requires": ["q2_first_harvest"],
+    "description": "Pak Darto menyuruhku menemui Raka di dermaga sungai, selatan alun-alun. Katanya ia jago memancing.",
+    "objective": { "type": "talk", "npc": "raka" },
+    "startText": [
+      "Oh ya, ada anak muda bernama Raka. Ia selalu memancing di dermaga sungai, di selatan alun-alun.",
+      "Temuilah dia. Pancing yang dipegangmu itu dulu milik kakekmu, lho."
+    ],
+    "endText": [
+      "Hah? Itu pancing Pak Wiryo! Aku belajar memancing dari beliau.",
+      "Caranya: hadap air, tekan C. Tunggu tanda seru, lalu tarik!",
+      "Waktu menarik, tekan C saat jarum ada di zona hijau. Gampang, kan?"
+    ],
+    "reward": { "gold": 50, "items": [], "friendship": 40 }
+  },
+  {
+    "id": "q5_fish_for_raka", "title": "Tantangan Pemancing", "giver": "raka", "requires": ["q4_meet_raka"],
+    "description": "Raka menantangku menangkap 3 ikan apa saja.",
+    "objective": { "type": "bring", "npc": "raka", "item": "category:fish", "amount": 3 },
+    "startText": [
+      "Coba buktikan kamu cucu Pak Wiryo. Tangkap 3 ikan, apa saja!",
+      "Kolam di kebunmu juga ada ikannya, lho."
+    ],
+    "endText": [
+      "Hebat! Kamu memang berbakat.",
+      "Mulai sekarang kita teman memancing, ya!"
+    ],
+    "reward": { "gold": 300, "items": [], "friendship": 80 }
+  },
+  {
+    "id": "q6_stone_for_well", "title": "Sumur Desa", "giver": "darto", "requires": ["q3_wood_for_stall", "q5_fish_for_raka"],
+    "description": "Sumur desa retak. Pak Darto butuh 25 Batu. Pecahkan batu dan kerikil dengan beliung.",
+    "objective": { "type": "bring", "npc": "darto", "item": "stone", "amount": 25 },
+    "startText": [
+      "Semua warga mulai membicarakanmu. Sari dan Raka senang sekali.",
+      "Aku punya satu permintaan lagi. Sumur desa retak dan airnya merembes.",
+      "Bawakan 25 Batu. Pakai beliung untuk memecahkan batu di kebunmu."
+    ],
+    "endText": [
+      "Ini cukup untuk memperbaiki sumur! Seluruh desa berterima kasih padamu."
+    ],
+    "reward": { "gold": 500, "items": [], "friendship": 80 }
+  },
+  {
+    "id": "q7_grandpa_wish", "title": "Mimpi Kakek", "giver": "darto", "requires": ["q6_stone_for_well"],
+    "description": "Kakek selalu bermimpi menanam kembang kol terbesar di desa. Bawakan 1 Kembang Kol ke Pak Darto.",
+    "objective": { "type": "bring", "npc": "darto", "item": "cauliflower", "amount": 1 },
+    "startText": [
+      "Kakekmu pernah bercerita. Mimpinya adalah menanam kembang kol terbesar di desa.",
+      "Ia tidak sempat mewujudkannya.",
+      "Maukah kamu mewujudkannya untuknya? Bawakan aku 1 Kembang Kol."
+    ],
+    "endText": [
+      "...",
+      "Kembang kol ini... indah sekali.",
+      "Wiryo pasti bangga melihatmu sekarang. Kebunnya hidup lagi.",
+      "Mulai hari ini, kamu bukan lagi pendatang. Kamu warga Desa Tandur."
+    ],
+    "reward": { "gold": 1000, "items": [ { "id": "pumpkin_seeds", "amount": 5 } ], "friendship": 100 }
+  }
+]

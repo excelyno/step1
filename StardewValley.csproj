@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <RootNamespace>FarmGame</RootNamespace>
     <AssemblyName>FarmGame</AssemblyName>
+    <!-- Best practice: form sadar DPI per monitor, jadi Windows tidak menge-blur jendela
+         di monitor 125%/150% (sebelumnya SystemAware = bitmap-stretch oleh OS). -->
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
   </PropertyGroup>
   <ItemGroup>
     <!-- Semua file di folder Content (map, nanti sprite) ikut disalin ke folder output -->
@@ -15,6 +18,10 @@
     </None>
     <!-- Sprite PNG hasil Tools/generate_assets.py -->
     <None Update="Assets\**\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- Efek suara WAV hasil Tools/generate_assets.py -->
+    <None Update="Assets\**\*.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

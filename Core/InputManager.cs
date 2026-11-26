@@ -8,7 +8,9 @@ public class InputManager
 {
     private readonly HashSet<Keys> _heldKeys = new();      // tombol yang sedang ditahan
     private readonly HashSet<Keys> _pressedKeys = new();   // tombol yang BARU ditekan frame ini
-    private readonly HashSet<MouseButtons> _pressedMouse = new();
+    private readonly HashSet<MouseButtons> _heldMouse = new();
+    private readonly HashSet<MouseButtons> _pressedMouse = new();   // tombol mouse BARU ditekan
+    private readonly HashSet<MouseButtons> _releasedMouse = new();  // tombol mouse BARU dilepas
     private int _wheelDelta;                               // putaran roda mouse frame ini
 
     // Tombol untuk slot toolbar 1..12: 1 2 3 4 5 6 7 8 9 0 - =
@@ -29,18 +31,39 @@ public class InputManager
 
     public void KeyUp(Keys key) => _heldKeys.Remove(key);
 
-    public void MouseDown(MouseButtons button) => _pressedMouse.Add(button);
+    /// <summary>Catat tombol mouse yang baru ditekan (hanya sekali sampai dilepas).</summary>
+    public void MouseDown(MouseButtons button)
+    {
+        if (_heldMouse.Add(button))
+            _pressedMouse.Add(button);
+    }
+
+    public void MouseUp(MouseButtons button)
+    {
+        _heldMouse.Remove(button);
+        _releasedMouse.Add(button);
+    }
 
     public void MouseWheel(int delta) => _wheelDelta += delta;
 
+    /// <summary>Posisi mouse di koordinat game (960x576), bukan koordinat jendela. Diisi GameForm.</summary>
+    public Point MousePosition { get; private set; } = new(-1, -1);
+
+    public void SetMousePosition(Point position) => MousePosition = position;
+
     /// <summary>Dipanggil saat jendela kehilangan fokus (Alt+Tab) supaya tombol tidak "nyangkut".</summary>
-    public void ReleaseAll() => _heldKeys.Clear();
+    public void ReleaseAll()
+    {
+        _heldKeys.Clear();
+        _heldMouse.Clear();
+    }
 
     /// <summary>Dipanggil di akhir setiap frame.</summary>
     public void EndFrame()
     {
         _pressedKeys.Clear();
         _pressedMouse.Clear();
+        _releasedMouse.Clear();
         _wheelDelta = 0;
     }
 
@@ -49,6 +72,12 @@ public class InputManager
     public bool IsHeld(Keys key) => _heldKeys.Contains(key);
 
     public bool WasPressed(Keys key) => _pressedKeys.Contains(key);
+
+    public bool IsMouseHeld(MouseButtons button) => _heldMouse.Contains(button);
+
+    public bool MouseDownPressed(MouseButtons button) => _pressedMouse.Contains(button);
+
+    public bool MouseUpPressed(MouseButtons button) => _releasedMouse.Contains(button);
 
     public bool IsRunning => IsHeld(Keys.ShiftKey);
 
@@ -60,6 +89,20 @@ public class InputManager
 
     /// <summary>Lanjut (layar ringkasan): Enter, Spasi, atau tombol aksi.</summary>
     public bool ConfirmPressed => WasPressed(Keys.Enter) || WasPressed(Keys.Space) || UseToolPressed || InteractPressed;
+
+    // ---------- MVP 2: menu (toko) ----------
+
+    /// <summary>Naik di menu: W / panah atas / roda mouse ke atas.</summary>
+    public bool MenuUpPressed => WasPressed(Keys.W) || WasPressed(Keys.Up) || WheelDirection < 0;
+
+    /// <summary>Turun di menu: S / panah bawah / roda mouse ke bawah.</summary>
+    public bool MenuDownPressed => WasPressed(Keys.S) || WasPressed(Keys.Down) || WheelDirection > 0;
+
+    /// <summary>Pilih / beli: C, Enter, Spasi, atau klik kiri.</summary>
+    public bool MenuSelectPressed => UseToolPressed || WasPressed(Keys.Enter) || WasPressed(Keys.Space);
+
+    /// <summary>Tutup menu: Esc, X, atau klik kanan.</summary>
+    public bool MenuClosePressed => WasPressed(Keys.Escape) || InteractPressed;
 
     /// <summary>Slot yang dipilih lewat tombol angka, atau -1 kalau tidak ada.</summary>
     public int GetPressedSlot()

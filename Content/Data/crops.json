@@ -1,7 +1,24 @@
 [
-  // Data tanaman MVP 1. Menambah tanaman = menambah satu baris di sini, tanpa ubah kode.
-  { "id": "parsnip",     "name": "Parsnip",     "seedName": "Bibit Parsnip",     "seedPrice": 20, "sellPrice": 35,  "daysToMature": 4,  "energyRestore": 25, "seasons": ["Spring"] },
-  { "id": "potato",      "name": "Kentang",     "seedName": "Bibit Kentang",     "seedPrice": 50, "sellPrice": 80,  "daysToMature": 6,  "energyRestore": 25, "seasons": ["Spring"] },
-  { "id": "kale",        "name": "Kale",        "seedName": "Bibit Kale",        "seedPrice": 70, "sellPrice": 110, "daysToMature": 6,  "energyRestore": 50, "seasons": ["Spring"] },
-  { "id": "cauliflower", "name": "Kembang Kol", "seedName": "Bibit Kembang Kol", "seedPrice": 80, "sellPrice": 175, "daysToMature": 12, "energyRestore": 75, "seasons": ["Spring"] }
+  // Data tanaman. Menambah tanaman = menambah satu baris di sini, tanpa ubah kode.
+  // MVP 2: toko bibit otomatis menjual tanaman yang cocok dengan musim hari ini.
+  // Gambar: tambahkan juga tanaman baru di Tools/generate_assets.py (kalau tidak, tampil kotak warna).
+  //
+  // Minigame & hama (versi baru):
+  //   regrowDays : 0 = sekali panen lalu tanaman hilang; >0 = berbuah lagi setelah N hari (petik berulang)
+  //   pest       : hama yang bisa datang = "" | aphid (kutu daun) | snail (bekicot) | crow (burung) | mold (jamur)
+
+  // Musim semi
+  { "id": "parsnip",     "name": "Parsnip",     "seedName": "Bibit Parsnip",     "seedPrice": 20,  "sellPrice": 35,  "daysToMature": 4,  "energyRestore": 25, "seasons": ["Spring"], "regrowDays": 0, "pest": "" },
+  { "id": "potato",      "name": "Kentang",     "seedName": "Bibit Kentang",     "seedPrice": 50,  "sellPrice": 80,  "daysToMature": 6,  "energyRestore": 25, "seasons": ["Spring"], "regrowDays": 0, "pest": "snail" },
+  { "id": "kale",        "name": "Kale",        "seedName": "Bibit Kale",        "seedPrice": 70,  "sellPrice": 110, "daysToMature": 6,  "energyRestore": 50, "seasons": ["Spring"], "regrowDays": 4, "pest": "snail" },
+  { "id": "cauliflower", "name": "Kembang Kol", "seedName": "Bibit Kembang Kol", "seedPrice": 80,  "sellPrice": 175, "daysToMature": 12, "energyRestore": 75, "seasons": ["Spring"], "regrowDays": 0, "pest": "mold" },
+
+  // Musim panas (jagung juga tumbuh di musim gugur)
+  { "id": "tomato",      "name": "Tomat",       "seedName": "Bibit Tomat",       "seedPrice": 40,  "sellPrice": 70,  "daysToMature": 7,  "energyRestore": 20, "seasons": ["Summer"], "regrowDays": 3, "pest": "aphid" },
+  { "id": "corn",        "name": "Jagung",      "seedName": "Bibit Jagung",      "seedPrice": 60,  "sellPrice": 95,  "daysToMature": 9,  "energyRestore": 25, "seasons": ["Summer", "Fall"], "regrowDays": 4, "pest": "crow" },
+
+  // Musim gugur
+  { "id": "eggplant",    "name": "Terong",      "seedName": "Bibit Terong",      "seedPrice": 30,  "sellPrice": 55,  "daysToMature": 5,  "energyRestore": 20, "seasons": ["Fall"], "regrowDays": 3, "pest": "aphid" },
+  { "id": "chili",       "name": "Cabai",       "seedName": "Bibit Cabai",       "seedPrice": 60,  "sellPrice": 120, "daysToMature": 9,  "energyRestore": 10, "seasons": ["Summer", "Fall"], "regrowDays": 3, "pest": "aphid" },
+  { "id": "pumpkin",     "name": "Labu",        "seedName": "Bibit Labu",        "seedPrice": 100, "sellPrice": 260, "daysToMature": 13, "energyRestore": 60, "seasons": ["Fall"], "regrowDays": 0, "pest": "snail" }
 ]

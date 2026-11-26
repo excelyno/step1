@@ -1,0 +1,67 @@
+// mail.json - surat yang datang ke kotak surat di kebun (MVP 5).
+// day   : hari ke berapa sejak mulai (1 = hari pertama, 29 = hari pertama musim panas, ...)
+// items : barang terlampir (id dari ItemRegistry), gold: uang terlampir.
+[
+  {
+    "id": "welcome_darto",
+    "day": 1,
+    "from": "Pak Darto",
+    "pages": [
+      "Selamat datang di Desa Tandur, Nak!",
+      "Kakekmu dulu sahabat terbaikku. Mampirlah ke alun-alun kapan saja. Aku biasa jalan-jalan di sekitar air mancur.",
+      "Ini sedikit bibit kentang dari kebunku. Tanam, siram setiap hari, dan sabar menunggu.  - Darto"
+    ],
+    "items": [ { "id": "potato_seeds", "amount": 3 } ]
+  },
+  {
+    "id": "shop_sari",
+    "day": 2,
+    "from": "Bu Sari",
+    "pages": [
+      "Halo, tetangga baru!",
+      "Toko bibitku ada di utara alun-alun, buka jam 09:00 sampai 17:00. Bibit musim semi baru datang!",
+      "Kalau menemukan bunga liar di padang, aku suka sekali, lho. Hehe.  - Sari"
+    ]
+  },
+  {
+    "id": "fishing_raka",
+    "day": 3,
+    "from": "Raka",
+    "pages": [
+      "Yo! Aku Raka, yang suka mancing di dermaga sungai.",
+      "Tips dariku: lihat riak kecil di air. Itu tanda ada ikan. Lempar kail ke dekat situ!",
+      "Kolam di kebunmu juga bagus. Kakekmu dulu sering dapat ikan gabus di sana."
+    ]
+  },
+  {
+    "id": "village_fund",
+    "day": 5,
+    "from": "Kantor Desa Tandur",
+    "pages": [
+      "Kepada Yth. pemilik baru Kebun Wiryo,",
+      "Sebagai bantuan untuk petani muda, desa memberikan dana kecil untuk membeli bibit.",
+      "Gunakan sebaik-baiknya. Semoga kebunmu subur!"
+    ],
+    "gold": 150
+  },
+  {
+    "id": "grandpa_note",
+    "day": 7,
+    "from": "Kakek Wiryo (surat lama)",
+    "pages": [
+      "Surat ini kutitipkan pada Pak Darto, untuk dikirim seminggu setelah kamu datang.",
+      "Kalau kamu masih di sini, berarti kamu betah. Kakek bangga.",
+      "Rahasia kecil: kembang kol memang lama tumbuh, tapi harganya paling mahal di musim semi."
+    ],
+    "items": [ { "id": "cauliflower_seeds", "amount": 2 } ]
+  },
+  {
+    "id": "summer_soon",
+    "day": 26,
+    "from": "Bu Sari",
+    "pages": [
+      "Musim semi hampir habis! Tanaman musim semi akan layu saat musim panas tiba.",
+      "Panen semua sebelum hari ke-28, ya. Bibit tomat dan jagung sudah kusiapkan di toko."
+    ]
+  }
+]

@@ -23,6 +23,13 @@ public abstract class Character : GameObject
 
     // Hitbox kecil di kaki (12x8). Gambar 16x32 berdiri di atasnya.
     public override SizeF HitboxSize => new(12f, 8f);
+
+    /// <summary>MVP 5: makhluk saling menabrak (pemain tidak bisa menembus warga, dan sebaliknya).</summary>
+    public override bool IsSolid => true;
+
+    // MVP 5: "corner correction". Kalau menabrak sudut dan hanya meleset beberapa piksel,
+    // karakter digeser sedikit ke samping supaya meluncur masuk celah (trik klasik game top-down).
+    private const float CornerNudgePixels = 6f;
     public override RectangleF SpriteBounds => new(Position.X - 2f, Position.Y - 24f, 16f, 32f);
 
     protected Character(string name)
@@ -62,22 +69,61 @@ public abstract class Character : GameObject
         if (delta == Vector2.Zero)
             return;
 
-        // Coba langkah penuh. Kalau menabrak, coba setengahnya, seperempatnya, dst.
-        // Hasilnya karakter merapat pas ke dinding tanpa celah.
-        float fraction = 1f;
+        if (CanStep(delta))
+        {
+            Position += delta;
+            return;
+        }
+
+        // Menabrak. 1) Beri tahu yang ditabrak (semak bergoyang). 2) Coba geser di sudut.
+        RectangleF wanted = CollisionBox;
+        wanted.Offset(delta.X, delta.Y);
+        if (Location!.FindBlocker(wanted, this) is IBumpable bumped)
+            bumped.OnBumped(this);
+
+        if (TryCornerNudge(delta))
+            return;
+
+        // Merapat pas ke dinding: coba setengah langkah, seperempat, dst.
+        float fraction = 0.5f;
         while (fraction > 0.01f)
         {
-            Vector2 step = delta * fraction;
-            RectangleF target = Bounds;
-            target.Offset(step.X, step.Y);
-
-            if (Location!.CanOccupy(target, this))
+            if (CanStep(delta * fraction))
             {
-                Position += step;
+                Position += delta * fraction;
                 return;
             }
             fraction /= 2f;
         }
+    }
+
+    private bool CanStep(Vector2 step)
+    {
+        RectangleF target = CollisionBox;
+        target.Offset(step.X, step.Y);
+        return Location!.CanOccupy(target, this);
+    }
+
+    /// <summary>Gerak lurus tertahan sudut? Cari geseran samping terkecil (1..6 px) yang membuka jalan.</summary>
+    private bool TryCornerNudge(Vector2 delta)
+    {
+        bool horizontal = delta.Y == 0;
+        for (float nudge = 1; nudge <= CornerNudgePixels; nudge++)
+        {
+            foreach (float sign in new[] { -1f, 1f })
+            {
+                Vector2 side = horizontal ? new Vector2(0, nudge * sign) : new Vector2(nudge * sign, 0);
+                if (CanStep(side) && CanStep(side + delta))
+                {
+                    // geser maksimal 1 px per frame ke samping -> terasa halus, bukan teleport
+                    Vector2 slide = horizontal ? new Vector2(0, sign) : new Vector2(sign, 0);
+                    if (CanStep(slide))
+                        Position += slide;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /// <summary>Semua karakter digambar dengan pola nama yang sama: "awalan_arah_frame", contoh "player_down_2".</summary>

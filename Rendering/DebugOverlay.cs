@@ -45,7 +45,7 @@ public class DebugOverlay
 
         foreach (GameObject obj in location.Objects)
         {
-            RectangleF b = obj.Bounds;
+            RectangleF b = obj.CollisionBox;   // MVP 5: kotak tabrakan yang sebenarnya
             g.DrawRectangle(hitboxPen, b.X, b.Y, b.Width, b.Height);
         }
 
@@ -72,7 +72,7 @@ public class DebugOverlay
             $"Waktu    : {game.Time.Date}  {game.Time.ClockText}",
             $"Energi   : {player.Stamina.Current}/{player.Stamina.Max}",
             $"Objek    : {game.CurrentLocation.Objects.Count}",
-            "F4 = +5 bibit   F6 = +1 jam",
+            "F4 = +5 bibit   F5 = +500g   F6 = +1 jam",
         };
 
         const int pad = 8, lineHeight = 16;

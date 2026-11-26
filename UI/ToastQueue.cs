@@ -38,6 +38,8 @@ public class ToastQueue
             _toasts.RemoveAt(0);   // buang yang paling lama
     }
 
+    public void Clear() => _toasts.Clear();
+
     public void Update(float deltaSeconds)
     {
         foreach (Toast toast in _toasts)

@@ -1,6 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace FarmGame.Data;
 
 /// <summary>Kumpulan semua data tanaman. Dibaca SEKALI dari crops.json saat game mulai.</summary>
@@ -13,34 +10,10 @@ public class CropDatabase
 
     public CropDatabase(string path)
     {
-        if (!File.Exists(path))
-            throw new GameDataException("File data tidak ditemukan: " + path);
-
         string fileName = Path.GetFileName(path);
-        List<CropData>? list;
-
-        try
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,                 // "daysToMature" = DaysToMature
-                ReadCommentHandling = JsonCommentHandling.Skip,     // boleh ada komentar //
-                AllowTrailingCommas = true,
-            };
-            options.Converters.Add(new JsonStringEnumConverter()); // "Spring" -> Season.Spring
-
-            list = JsonSerializer.Deserialize<List<CropData>>(File.ReadAllText(path), options);
-        }
-        catch (JsonException ex)
-        {
-            throw new GameDataException($"{fileName}: format JSON salah ({ex.Message}).");
-        }
-
-        if (list == null || list.Count == 0)
-            throw new GameDataException(fileName + ": tidak ada data tanaman.");
 
         // Validasi setiap tanaman
-        foreach (CropData crop in list)
+        foreach (CropData crop in JsonDataFile.ReadList<CropData>(path))
         {
             if (crop.DaysToMature <= 0)
                 throw new GameDataException($"{fileName}: '{crop.Id}' daysToMature harus lebih dari 0.");

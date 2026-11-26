@@ -1,0 +1,43 @@
+[
+  // Warga desa (MVP 4). id = nama sprite ("npc_<id>_down_0").
+  // loves/likes/hates: id item atau "category:fish" / "category:produce" / "category:resource" / "category:forage".
+  {
+    "id": "darto", "name": "Pak Darto", "role": "Kepala Desa Tandur",
+    "dailyLines": [
+      "Pagi yang cerah! Jangan lupa siram tanamanmu.",
+      "Kakekmu dulu bangun sebelum ayam berkokok.",
+      "Musim panas nanti, tanam jagung. Untungnya lumayan!",
+      "Labu di musim gugur bisa dijual mahal sekali.",
+      "Kalau sudah jam 2 pagi, kamu bisa pingsan. Tidurlah lebih awal."
+    ],
+    "heartLines": [
+      "Melihatmu bekerja, aku jadi teringat kakekmu waktu muda.",
+      "Desa ini terasa hidup lagi sejak kamu datang."
+    ],
+    "loves": ["pumpkin", "gourami", "mushroom"], "likes": ["parsnip", "category:fish"], "hates": ["stone"]
+  },
+  {
+    "id": "sari", "name": "Bu Sari", "role": "Penjual bibit",
+    "dailyLines": [
+      "Bibit segar setiap hari!",
+      "Tanah kebunmu itu subur. Kakekmu merawatnya puluhan tahun.",
+      "Kembang kol butuh waktu lama, tapi harganya sepadan."
+    ],
+    "heartLines": [
+      "Kamu pelanggan favoritku. Jangan bilang yang lain, ya!"
+    ],
+    "loves": ["cauliflower", "tomato", "wildflower"], "likes": ["category:produce", "category:forage"], "hates": ["category:fish"]
+  },
+  {
+    "id": "raka", "name": "Raka", "role": "Pemancing muda",
+    "dailyLines": [
+      "Ssst... jangan berisik, nanti ikannya kabur.",
+      "Ikan Gabus itu susah sekali ditangkap. Jarumnya cepat!",
+      "Kalau muncul tanda seru, tarik secepatnya!"
+    ],
+    "heartLines": [
+      "Kapan-kapan kita mancing bareng di kolam kebunmu, ya!"
+    ],
+    "loves": ["snakehead", "eel"], "likes": ["category:fish", "corn", "berries"], "hates": ["kale"]
+  }
+]

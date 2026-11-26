@@ -11,9 +11,16 @@ public class Player : Character
     private bool _wantsToRun;
     private float _actionCooldown; // sisa jeda setelah pakai alat (detik)
 
+    // MVP 5: animasi ayunan alat (gambar alat berputar di tangan)
+    private const float SwingSeconds = 0.3f;
+    private float _swingTimer;
+    private string? _swingSprite;
+    private bool _swingIsPour;     // penyiram: dimiringkan, bukan diayun
+
     public Inventory Inventory { get; } = new(GameConfig.InventorySize);
     public Wallet Wallet { get; } = new(GameConfig.StartingGold);
     public Stamina Stamina { get; } = new(GameConfig.MaxStamina);
+    public Relationships Relationships { get; } = new();   // MVP 4: pertemanan dengan warga
 
     protected override string SpritePrefix => "player";
 
@@ -39,6 +46,9 @@ public class Player : Character
     {
     }
 
+    /// <summary>MVP 5: hadap ke arah tertentu (dipakai saat memuat simpanan).</summary>
+    public void FaceTo(Direction direction) => Facing = direction;
+
     public void SetMovementIntent(Vector2 direction, bool run)
     {
         // Jaga panjang vektor maksimal 1, supaya jalan diagonal tidak lebih cepat
@@ -51,6 +61,7 @@ public class Player : Character
 
     public override void Update(float deltaSeconds)
     {
+        _swingTimer = Math.Max(0, _swingTimer - deltaSeconds);
         if (IsBusy)
         {
             _actionCooldown -= deltaSeconds;
@@ -78,8 +89,61 @@ public class Player : Character
             if (usable.ConsumesOnUse)
                 Inventory.RemoveFromSlot(Inventory.SelectedIndex, 1);   // bibit berkurang
             _actionCooldown = GameConfig.ToolCooldownSeconds;
+            StartSwing(usable as Item);
         }
         return result;
+    }
+
+    /// <summary>Alat (selain pancing, yang punya layar sendiri) diayun; bibit tidak.</summary>
+    private void StartSwing(Item? item)
+    {
+        if (item is not Tool || item is FishingRod)
+            return;
+        _swingSprite = item.SpriteKey;
+        _swingIsPour = item is WateringCan;
+        _swingTimer = SwingSeconds;
+    }
+
+    /// <summary>MVP 5: menghadap ke atas = alat di belakang badan, arah lain = di depan.</summary>
+    public override void Draw(Graphics g, IAssetProvider assets)
+    {
+        bool behind = Facing == Direction.Up;
+        if (behind)
+            DrawSwing(g, assets);
+        base.Draw(g, assets);
+        if (!behind)
+            DrawSwing(g, assets);
+    }
+
+    /// <summary>
+    /// Gambar alat berputar di sekitar tangan. Sudut 0 = alat tegak (gagang di bawah), 90 = mengarah ke depan.
+    /// Ayunan: diangkat ke belakang lalu dihantamkan ke depan dengan cepat (ease-out).
+    /// </summary>
+    private void DrawSwing(Graphics g, IAssetProvider assets)
+    {
+        if (_swingTimer <= 0 || _swingSprite == null)
+            return;
+
+        float t = 1f - _swingTimer / SwingSeconds;
+        float eased = 1f - (1f - t) * (1f - t);
+        float angle = _swingIsPour ? 20f + 70f * eased : -50f + 160f * eased;
+
+        Vector2 hand;
+        float mirror = 1f;
+        switch (Facing)
+        {
+            case Direction.Left: hand = new Vector2(Position.X + 2, Position.Y - 7); mirror = -1f; break;
+            case Direction.Right: hand = new Vector2(Position.X + 10, Position.Y - 7); break;
+            case Direction.Up: hand = new Vector2(Position.X + 9, Position.Y - 12); angle = _swingIsPour ? 30 * eased : -20f + 40f * eased; break;
+            default: hand = new Vector2(Position.X + 9, Position.Y - 4); angle = _swingIsPour ? 150f + 40f * eased : 100f + 90f * eased; break;
+        }
+
+        GraphicsState state = g.Save();
+        g.TranslateTransform(hand.X, hand.Y);
+        g.ScaleTransform(mirror, 1f);
+        g.RotateTransform(angle);
+        assets.DrawSprite(g, _swingSprite, new RectangleF(-4, -13, 13, 13));
+        g.Restore(state);
     }
 
     /// <summary>Tombol X / klik kanan: periksa benda di depan. Kalau tidak ada, coba makan item terpilih.</summary>
@@ -88,8 +152,9 @@ public class Player : Character
         if (IsBusy || Location == null)
             return ActionResult.None();
 
-        // 1. Ada benda yang bisa diperiksa di depan? (panen, kotak kirim, pintu)
-        if (Location.GetObjectAt(FacingTile) is IInteractable target && target.CanInteract(this))
+        // 1. Ada sesuatu yang bisa diperiksa di depan? (panen, kotak kirim, pintu, meja toko, papan, warga)
+        IInteractable? target = Location.GetInteractableAt(FacingTile);
+        if (target != null && target.CanInteract(this))
             return target.Interact(new ActionContext(this, Location, FacingTile, services));
 
         // 2. Kalau tidak, dan pegang makanan -> makan
@@ -97,7 +162,11 @@ public class Player : Character
         {
             ActionResult result = food.Eat(this);
             if (result.Success)
+            {
                 Inventory.RemoveFromSlot(Inventory.SelectedIndex, 1);
+                if (Location is IGameServices game)
+                    game.PlaySound("eat");
+            }
             return result;
         }
 

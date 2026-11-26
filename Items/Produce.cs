@@ -1,7 +1,7 @@
 namespace FarmGame.Items;
 
-/// <summary>Hasil panen: bisa dijual (karena Item) DAN bisa dimakan (karena IEdible).</summary>
-public class Produce : Item, IEdible
+/// <summary>Hasil panen: bisa dijual (karena Item) DAN bisa dimakan (karena Food).</summary>
+public class Produce : Food
 {
     public CropData Data { get; }
 
@@ -13,14 +13,5 @@ public class Produce : Item, IEdible
 
     public override ItemCategory Category => ItemCategory.Produce;
 
-    public int EnergyRestore => Data.EnergyRestore;
-
-    public ActionResult Eat(Player eater)
-    {
-        if (eater.Stamina.Current >= eater.Stamina.Max)
-            return ActionResult.Fail("Energimu sudah penuh.");
-
-        eater.Stamina.Restore(EnergyRestore);
-        return ActionResult.Ok($"Makan {Name}. +{EnergyRestore} energi");
-    }
+    public override int EnergyRestore => Data.EnergyRestore;
 }

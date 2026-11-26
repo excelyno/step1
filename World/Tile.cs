@@ -14,7 +14,8 @@ public class Tile
         Type = type;
     }
 
-    public bool IsWalkable => Type == TileType.Grass || Type == TileType.Dirt || Type == TileType.Path;
+    public bool IsWalkable => Type is TileType.Grass or TileType.Dirt or TileType.Path or TileType.Floor
+                                   or TileType.Bridge or TileType.Cobble;
 
     /// <summary>MVP 1: hanya tanah (Dirt) yang bisa dicangkul.</summary>
     public bool IsTillable => Type == TileType.Dirt;

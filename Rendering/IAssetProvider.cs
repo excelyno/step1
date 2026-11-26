@@ -14,4 +14,10 @@ public interface IAssetProvider
 
     /// <summary>spriteKey berformat "kategori_nama[_detail]", contoh "player_down_2", "crop_parsnip_3".</summary>
     void DrawSprite(Graphics g, string spriteKey, RectangleF dest);
+
+    /// <summary>
+    /// MVP 5: tingkat kelihatan sprite berikutnya (1 = penuh, 0.4 = tembus pandang).
+    /// Renderer mengaturnya sebelum menggambar atap / pohon yang menutupi pemain, lalu mengembalikannya ke 1.
+    /// </summary>
+    float Opacity { get; set; }
 }

@@ -1,0 +1,67 @@
+[
+  // Minigame bercocok tanam. Satu baris = satu minigame.
+  //
+  // id           : kunci unik (dipakai untuk menyimpan bintang)
+  // cropId       : tanaman pemicunya. "" = event (hama), dipakai untuk semua tanaman.
+  // widget       : Timing | Grid | Hold | Drag  (jenis permainan; gambar & aturannya sudah ada di kode)
+  // tutorialOnce : true  = hanya muncul sekali (setelah lulus, aksi berikutnya otomatis)
+  //                false = selalu muncul (event hama, karena ini aksi menanganinya)
+  // wrongAllowed : berapa kali boleh salah. Lewat dari ini = tetap selesai dengan 1 bintang.
+
+  {
+    "id": "tomato_pick", "cropId": "tomato", "widget": "Hold", "tutorialOnce": true,
+    "title": "Petik Tomat dengan Halus",
+    "goal": "Tahan tombol sampai penanda masuk zona hijau, lalu lepas.",
+    "fact": "Tomat mudah pecah. Putar pelan-pelan, jangan ditarik keras.",
+    "tip": "Terlalu lama menahan = buahnya pecah. Lepas tepat di zona hijau.",
+    "targetMin": 0.45, "targetMax": 0.70, "fillSpeed": 0.55, "rounds": 2, "wrongAllowed": 2
+  },
+  {
+    "id": "eggplant_pick", "cropId": "eggplant", "widget": "Grid", "tutorialOnce": true,
+    "title": "Petik Terong yang Matang",
+    "goal": "Klik hanya terong yang sudah matang. Yang pucat biarkan dulu.",
+    "fact": "Terong dipetik saat kulitnya mengilap dan bijinya masih muda.",
+    "tip": "Terong muda warnanya pucat. Tunggu sampai tua sedikit.",
+    "rows": 3, "cols": 4, "mode": "pick", "targets": 3, "wrongAllowed": 2
+  },
+  {
+    "id": "potato_dig", "cropId": "potato", "widget": "Drag", "tutorialOnce": true,
+    "title": "Gali Kentang Hati-hati",
+    "goal": "Tahan klik lalu putari gundukan sampai lingkaran penuh. Jangan menyentuh umbinya.",
+    "fact": "Kentang tumbuh di dalam tanah. Cangkul dari samping supaya umbi tidak terluka.",
+    "tip": "Jaga jarak dari tengah — di situ umbinya berada.",
+    "tolerance": 0.13, "wrongAllowed": 2
+  },
+  {
+    "id": "kale_pick", "cropId": "kale", "widget": "Grid", "tutorialOnce": true,
+    "title": "Petik Daun Kale dari Luar",
+    "goal": "Klik daun dari paling luar, lalu makin ke dalam. Sisakan pucuknya.",
+    "fact": "Kale dipetik daun tuanya saja. Pucuk dibiarkan supaya tumbuh lagi.",
+    "tip": "Urutannya dari luar ke dalam, ya.",
+    "rows": 3, "cols": 5, "mode": "order", "targets": 4, "wrongAllowed": 2
+  },
+  {
+    "id": "corn_snap", "cropId": "corn", "widget": "Timing", "tutorialOnce": true,
+    "title": "Kupas & Patahkan Jagung",
+    "goal": "Tekan saat penanda di zona hijau untuk mematahkan tongkol.",
+    "fact": "Jagung dipanen saat rambutnya sudah cokelat kering. Patahkan dengan diputar.",
+    "tip": "Kalau meleset, tongkolnya tetap ada. Coba lagi.",
+    "hits": 3, "needleSpeed": 0.80, "zoneWidth": 0.24, "wrongAllowed": 2
+  },
+  {
+    "id": "chili_pick", "cropId": "chili", "widget": "Grid", "tutorialOnce": true,
+    "title": "Petik Cabai yang Merah",
+    "goal": "Klik hanya cabai yang sudah merah. Yang masih hijau biarkan dulu.",
+    "fact": "Cabai dipetik bersama tangkainya, bukan ditarik buahnya, supaya cabang tidak rusak.",
+    "tip": "Cabai hijau masih muda. Petik yang merah saja, lalu cabai baru tumbuh lagi.",
+    "rows": 3, "cols": 4, "mode": "pick", "targets": 3, "wrongAllowed": 2
+  },
+  {
+    "id": "pest_catch", "cropId": "", "widget": "Grid", "tutorialOnce": false,
+    "title": "Tangkap Hama",
+    "goal": "Klik semua hama. Jangan sampai terkena daun tanaman.",
+    "fact": "Kutu, bekicot, dan burung memakan tanaman. Periksa ladang tiap pagi.",
+    "tip": "Hama yang dibiarkan 2 hari membuat panen berkurang 1 buah.",
+    "rows": 3, "cols": 4, "mode": "avoid", "targets": 4, "wrongAllowed": 2
+  }
+]

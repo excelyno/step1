@@ -9,12 +9,16 @@ public class WateringCan : Tool
     public int Capacity { get; } = GameConfig.WateringCanCapacity;
     public int WaterLeft { get; private set; }
 
-    public WateringCan() : base("watering_can", "Penyiram", "Menyiram tanaman. Isi ulang di kolam.")
+    public WateringCan() : base("watering_can", "Penyiram", "Menyiram tanaman. Isi ulang di sungai, kolam, atau sumur.")
     {
         WaterLeft = Capacity;
     }
 
     public override int EnergyCost => 2;
+
+    /// <summary>Isi ulang = cipratan; siram = tetesan air.</summary>
+    protected override EffectKind GetUseEffect(ActionContext context) =>
+        IsFacingWater(context) ? EffectKind.Splash : EffectKind.Water;
 
     /// <summary>Bar biru di toolbar = sisa air.</summary>
     public override float? MeterRatio => (float)WaterLeft / Capacity;
@@ -53,8 +57,23 @@ public class WateringCan : Tool
         return ActionResult.Ok();
     }
 
+    /// <summary>MVP 5: isi penuh (sumur). False kalau sudah penuh.</summary>
+    public bool Refill()
+    {
+        if (WaterLeft == Capacity)
+            return false;
+        WaterLeft = Capacity;
+        return true;
+    }
+
+    /// <summary>MVP 5: dari file simpanan.</summary>
+    public void RestoreWater(int amount) => WaterLeft = Math.Clamp(amount, 0, Capacity);
+
+    /// <summary>Air di depan: tile air, atau sumur / air mancur (MVP 5).</summary>
     private bool IsFacingWater(ActionContext context)
     {
+        if (context.Location.GetObjectAt(context.TargetTile) is IWaterSource)
+            return true;
         Tile? tile = context.Location.Map.GetTile(context.TargetTile.X, context.TargetTile.Y);
         return tile != null && tile.Type == TileType.Water;
     }

@@ -1,0 +1,11 @@
+# farmhouse.txt - Dalam rumah (12 x 9 tile)
+# O=lantai X=dinding. Keset keluar di (5,8). Perabot diatur di FarmHouse.cs.
+XXXXXXXXXXXX
+XXXXXXXXXXXX
+XOOOOOOOOOOX
+XOOOOOOOOOOX
+XOOOOOOOOOOX
+XOOOOOOOOOOX
+XOOOOOOOOOOX
+XOOOOOOOOOOX
+XXXXXOXXXXXX

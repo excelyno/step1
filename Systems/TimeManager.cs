@@ -24,6 +24,14 @@ public class TimeManager : IUpdatable
     /// <summary>Teks jam, contoh "06:00", "01:30".</summary>
     public string ClockText => $"{TimeOfDay / 60 % 24:00}:{TimeOfDay % 60:00}";
 
+    /// <summary>MVP 5: kembalikan tanggal & jam dari file simpanan.</summary>
+    public void Restore(GameDate date, int timeOfDay)
+    {
+        Date = date;
+        TimeOfDay = timeOfDay;
+        _timer = 0;
+    }
+
     public void Pause() => IsPaused = true;
     public void Resume() => IsPaused = false;
 

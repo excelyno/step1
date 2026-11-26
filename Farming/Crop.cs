@@ -20,6 +20,13 @@ public class Crop
         Data = data;
     }
 
+    /// <summary>MVP 5: tanaman dari file simpanan (sudah tumbuh beberapa hari).</summary>
+    public Crop(CropData data, int daysGrown, bool isDead) : this(data)
+    {
+        DaysGrown = daysGrown;
+        IsDead = isDead;
+    }
+
     /// <summary>Tahap gambar 0..4 berdasarkan berapa hari sudah tumbuh.</summary>
     public int Stage
     {
@@ -51,5 +58,14 @@ public class Crop
 
         if (wasWatered && !IsReady)
             DaysGrown++;
+    }
+
+    /// <summary>
+    /// Setelah dipanen: tanaman berbuah lagi (tomat, kale, jagung) mundur beberapa hari,
+    /// atau hilang sama sekali (kentang, parsnip). HoeDirt yang memutuskan mana yang dipakai.
+    /// </summary>
+    public void AfterHarvest()
+    {
+        DaysGrown = Math.Max(0, DaysGrown - Data.RegrowDays);
     }
 }

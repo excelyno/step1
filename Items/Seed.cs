@@ -32,6 +32,8 @@ public class Seed : Item, IUsable
             return ActionResult.Fail($"{Data.Name} tidak bisa tumbuh di musim ini.");
 
         dirt.Plant(new Crop(Data));
+        context.Services.SpawnEffect(EffectKind.Dirt, Tool.TileCenter(context.TargetTile));
+        context.Services.PlaySound("plant");
         return ActionResult.Ok();
     }
 }

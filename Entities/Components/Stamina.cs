@@ -16,6 +16,9 @@ public class Stamina
 
     public bool CanSpend(int amount) => amount <= Current;
 
+    /// <summary>MVP 5: dari file simpanan.</summary>
+    public void RestoreExact(int value) => Current = Math.Clamp(value, 0, Max);
+
     public void Spend(int amount)
     {
         if (!CanSpend(amount))

@@ -3,6 +3,10 @@
 MVP 1 menambah: tas/toolbar, cangkul, penyiram, bibit, tanaman tumbuh per hari, jam & kalender,
 energi, kotak kirim (jual malam hari), tidur lewat pintu rumah, HUD, dan pesan singkat (toast).
 
+> **Catatan versi terbaru:** kotak kirim sekarang dibuka dengan menu (tas <-> kotak, 36 slot,
+> drag & drop mouse, bisa ditarik kembali sebelum tidur). Lihat `DOKUMENTASI_INVENTORY.md`.
+> Dokumen MVP 1 di bawah tetap menjelaskan versi awalnya.
+
 ## Kontrol
 
 | Tombol | Fungsi |
@@ -186,7 +190,7 @@ Tool.Use = cek energi → ApplyEffect → bayar energi kalau berhasil
 Player.Interact
   1. Ada IInteractable di depan & CanInteract? → Interact
        HoeDirt      : panen / bersihkan tanaman mati
-       ShippingBin  : masukkan slot terpilih
+       ShippingBin  : buka menu kotak (versi baru; dulu: masukkan slot terpilih)
        FarmhouseDoor: RequestSleep → DayEndState
   2. Tidak ada → item terpilih IEdible? → makan
 ```

@@ -20,6 +20,19 @@ public abstract class GameObject : IUpdatable, IDrawable
 
     public RectangleF Bounds => new(Position.X, Position.Y, HitboxSize.Width, HitboxSize.Height);
 
+    /// <summary>
+    /// MVP 5: kotak tabrakan yang SEBENARNYA dipakai saat berjalan. Default = Bounds.
+    /// Turunan boleh mengecilkannya (pohon: hanya batang, lampu: hanya tiang) supaya terasa pas,
+    /// seperti di game sungguhan: gambar boleh besar, tapi yang menabrak hanya "kaki"-nya.
+    /// </summary>
+    public virtual RectangleF CollisionBox => Bounds;
+
+    /// <summary>MVP 5: jadi tembus pandang kalau pemain berjalan di belakangnya (atap rumah, daun pohon).</summary>
+    public virtual bool FadesWhenBehind => false;
+
+    /// <summary>MVP 5: tingkat kelihatan saat ini (1 = penuh). Diatur Renderer pelan-pelan, bukan langsung.</summary>
+    public float Opacity { get; set; } = 1f;
+
     public Vector2 Center => new(Position.X + HitboxSize.Width / 2f, Position.Y + HitboxSize.Height / 2f);
 
     public Point TilePosition => new(TileMap.WorldToTile(Center.X), TileMap.WorldToTile(Center.Y));
@@ -36,6 +49,9 @@ public abstract class GameObject : IUpdatable, IDrawable
 
     /// <summary>Default tidak melakukan apa-apa. Turunan boleh menimpa (override).</summary>
     public virtual void Update(float deltaSeconds) { }
+
+    /// <summary>MVP 4: bayangan di tanah, digambar sebelum SEMUA objek. Default: tidak ada (sprite sudah punya bayangan).</summary>
+    public virtual void DrawShadow(Graphics g) { }
 
     /// <summary>Cara menggambar. WAJIB ditulis oleh kelas turunan.</summary>
     public abstract void Draw(Graphics g, IAssetProvider assets);

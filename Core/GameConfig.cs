@@ -12,8 +12,27 @@ public static class GameConfig
     public const int ViewTilesY = 12;
     public const int ViewWidth = ViewTilesX * TileSize;    // 320 piksel logis
     public const int ViewHeight = ViewTilesY * TileSize;   // 192 piksel logis
-    public const int ScreenWidth = ViewWidth * Scale;      // 960 piksel layar
-    public const int ScreenHeight = ViewHeight * Scale;    // 576 piksel layar
+    public const int ScreenWidth = ViewWidth * Scale;      // 960 piksel (ruang gambar game)
+    public const int ScreenHeight = ViewHeight * Scale;    // 576 piksel (ruang gambar game)
+
+    // Render scale dinamis (best practice pixel-art): back buffer = ViewWidth*RenderScale.
+    // 1 = kasar; makin besar makin tajam. Diatur GameForm sesuai ukuran jendela/layar.
+    // Semua kode game tetap menggambar di ruang 960x576 (Scale=3); faktor RenderScale/Scale
+    // dipasang di paling atas Game.Draw, jadi sprite 16px tampil 16*RenderScale piksel = rapi.
+    public const int MaxRenderScale = 8;
+    private static int _renderScale = Scale;
+    public static int RenderScale
+    {
+        get => _renderScale;
+        set => _renderScale = Math.Clamp(value, 1, MaxRenderScale);
+    }
+
+    /// <summary>Ukuran back buffer sebenarnya (piksel perangkat).</summary>
+    public static int SurfaceWidth => ViewWidth * RenderScale;
+    public static int SurfaceHeight => ViewHeight * RenderScale;
+
+    /// <summary>Faktor dari ruang game 960x576 ke back buffer.</summary>
+    public static float UiFactor => RenderScale / (float)Scale;
 
     // Game loop
     public const int TimerInterval = 10;        // ms. Windows membulatkannya ke ±15,6 ms (±60 FPS)
@@ -26,6 +45,7 @@ public static class GameConfig
 
     // MVP 1: bertani
     public const int InventorySize = 12;            // jumlah slot tas = toolbar
+    public const int ShippingBinSize = 36;          // jumlah slot kotak kirim (6 x 6)
     public const int StartingGold = 500;
     public const int MaxStamina = 270;
     public const float ToolCooldownSeconds = 0.35f; // jeda setelah pakai alat (tidak bisa jalan)
@@ -34,7 +54,21 @@ public static class GameConfig
     public const float PassedOutEnergyRatio = 0.5f; // pingsan: bangun dengan 50% energi
     public const float LateSleepEnergyRatio = 0.75f;// tidur lewat jam 24:00: 75% energi
 
+    // Minigame bercocok tanam & hama
+    public const int PestChancePercent = 12;   // peluang hama baru tiap pagi, per tanaman
+    public const int PestPenaltyDays = 2;      // hama dibiarkan selama ini -> panen -1 buah
+
     // Lokasi file
     public static readonly string MapFolder = Path.Combine("Content", "Maps");
     public static readonly string DataFolder = Path.Combine("Content", "Data");
+
+    // MVP 7: hutan prosedural di timur kebun
+    public const int ForestWidth = 80;            // tile
+    public const int ForestHeight = 56;           // tile
+    public const int ForestInitialTrees = 900;    // pohon+cemara saat dunia dibuat
+    public const int ForestMaxTrees = 1100;       // batas total pohon (anti membesar tanpa henti)
+    public const int ForestRegrowPerDay = 8;      // pohon baru yang tumbuh tiap pagi (dibawah batas)
+    public const int ForestMaxRocks = 220;        // batas batu di hutan
+    public const int ForestRockPerDay = 2;        // batu baru tiap pagi
+    public const int DefaultWorldSeed = 20250101; // dipakai simpanan lama yang belum menyimpan seed
 }

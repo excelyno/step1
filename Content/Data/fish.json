@@ -1,0 +1,11 @@
+[
+  // Data ikan (MVP 3). Ikan baru = baris baru di sini (+ gambar di Tools/generate_assets.py).
+  // difficulty 1..5: makin besar, jarum minigame makin cepat & zona hijau makin sempit, dan makin jarang menggigit.
+  { "id": "carp",       "name": "Ikan Mas",   "sellPrice": 30,  "energyRestore": 15, "difficulty": 1, "seasons": ["Spring", "Summer", "Fall"] },
+  { "id": "mujair",     "name": "Mujair",     "sellPrice": 35,  "energyRestore": 15, "difficulty": 1, "seasons": ["Winter", "Spring"] },
+  { "id": "tilapia",    "name": "Nila",       "sellPrice": 45,  "energyRestore": 20, "difficulty": 2, "seasons": ["Spring", "Summer"] },
+  { "id": "catfish",    "name": "Lele",       "sellPrice": 65,  "energyRestore": 25, "difficulty": 3, "seasons": ["Spring", "Fall", "Winter"] },
+  { "id": "gourami",    "name": "Gurame",     "sellPrice": 90,  "energyRestore": 30, "difficulty": 3, "seasons": ["Summer", "Fall"] },
+  { "id": "eel",        "name": "Belut",      "sellPrice": 110, "energyRestore": 35, "difficulty": 4, "seasons": ["Fall", "Winter"] },
+  { "id": "snakehead",  "name": "Ikan Gabus", "sellPrice": 150, "energyRestore": 40, "difficulty": 5, "seasons": ["Summer", "Winter"] }
+]
